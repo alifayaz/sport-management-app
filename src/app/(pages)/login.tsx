@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { View, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, Text } from "react-native"
+import {View, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, Text, Dimensions} from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { apiService } from "@/services/apiService"
 import {Controller, useForm} from "react-hook-form";
@@ -60,7 +60,7 @@ export default function Login({ onLogin }: LoginScreenProps) {
                             field.onChange(value);
                           }}
                           placeholder={'User name'}
-                          className='w-full [&>div]:bg-white rounded-2xl'
+                          className='w-full'
                           errorMessage={!!error?.message ? error.message : undefined}
                       />
                   )}
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor:
         "#f5f5f5",
+    width: Dimensions.get("window").width
   }
   ,
   scrollContainer: {

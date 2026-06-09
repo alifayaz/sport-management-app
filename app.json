@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "sport-management",
-    "slug": "sport-management",
+    "name": "sport-management-app",
+    "slug": "sport-management-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -17,18 +17,20 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.alifayaz.sportmanagementapp"
     },
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
     "extra": {
-      "eas": {
-        "projectId": "55bad9fd-bb8e-4243-8f98-1012570ac4eb"
-      },
       "API_URL": "http://192.168.11.10:3000",
-      "APP_VERSION": "v1"
+      "APP_VERSION": "v1",
+      "router": {},
+      "eas": {
+        "projectId": "5830bcda-6232-4044-9f94-c099375a8a1b"
+      }
     },
     "plugins": [
       "expo-router",
@@ -46,6 +48,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "owner": "fayazsaberis-team",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3d2d5c71-de16-4b0e-84c5-668564133e32"
     }
   }
 }
