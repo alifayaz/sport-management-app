@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "sport-management-app",
-    "slug": "sport-management-app",
+    "name": "sport-management",
+    "slug": "sport-management",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -18,7 +18,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.alifayaz.sportmanagementapp"
+      "package": "com.alifayaz.sportmanagement"
     },
     "web": {
       "output": "static",
@@ -29,7 +29,7 @@
       "APP_VERSION": "v1",
       "router": {},
       "eas": {
-        "projectId": "5830bcda-6232-4044-9f94-c099375a8a1b"
+        "projectId": "3d2d5c71-de16-4b0e-84c5-668564133e32"
       }
     },
     "plugins": [
@@ -49,7 +49,7 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "owner": "fayazsaberis-team",
+    "owner": "alifayaz",
     "runtimeVersion": {
       "policy": "appVersion"
     },
