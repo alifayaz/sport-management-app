@@ -12,8 +12,8 @@ SplashScreen.preventAutoHideAsync();
 export default function TabLayout() {
   const colorScheme = useColorScheme();
     const [fontsLoaded] = useFonts({
-        YekanBakh: require('../../assets/fonts/YekanBakh-Regular.ttf'),
-        YekanBakhBold: require('../../assets/fonts/YekanBakh-Bold.ttf'),
+        YekanBakh: require('@/assets/fonts/YekanBakh-Regular.ttf'),
+        YekanBakhBold: require('@/assets/fonts/YekanBakh-Bold.ttf'),
     });
     useEffect(() => {
         if (fontsLoaded) {
