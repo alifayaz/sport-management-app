@@ -1,7 +1,20 @@
 "use client"
 
 import { useState } from "react"
-import {View, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, Text, Dimensions, Button, TextInput, Image} from "react-native"
+import {
+  View,
+  StyleSheet,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Text,
+  Dimensions,
+  TextInput,
+  Image,
+  Pressable,
+  ActivityIndicator
+} from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { apiService } from "@/services/apiService"
 import {Controller, useForm} from "react-hook-form";
@@ -40,14 +53,14 @@ export default function Login({ onLogin }: LoginScreenProps) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.logoContainer}>
-            <Image alt='' source={require("@/assets/images/expo-logo.png")} style={styles.logo} />
+            <Image alt='' source={require("@/assets/images/logo.webp")} style={styles.logo} />
             <Text style={styles.title}>
-              باشگاه ورزشی
+              بازیار
             </Text>
-            <Text>سیستم مدیریت باشگاه</Text>
+            <Text style={styles.subtitle}>اپلیکیشن جستجو همبازی</Text>
           </View>
 
-          <View style={styles.card}>
+          <View className='flex flex-col gap-2'>
               <Controller
                   control={control}
                   name='username'
@@ -57,8 +70,8 @@ export default function Login({ onLogin }: LoginScreenProps) {
                           value={field.value}
                           onChangeText={field.onChange}
                           onBlur={field.onBlur}
-                          placeholder={'User name'}
-                          className='w-full'
+                          placeholder='نام کاربری'
+                          className='border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0'
                       />
                   )}
               />
@@ -71,15 +84,16 @@ export default function Login({ onLogin }: LoginScreenProps) {
                           value={field.value}
                           onChangeText={field.onChange}
                           onBlur={field.onBlur}
-                          placeholder={'Password'}
-                          className='w-full [&>div]:bg-white rounded-2xl'
+                          placeholder='رمز عبور'
+                          className='border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0'
                       />
                   )}
               />
-              <Button
-                  title='ورود'
-                  onPress={handleSubmit(handleLogin)}
-              />
+            <Pressable style={styles.button} onPress={handleSubmit(handleLogin)}>
+              {loading ? (
+                  <ActivityIndicator color="#fff" />
+              ) : (<Text style={styles.buttonText}>ورود</Text>)}
+            </Pressable>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -89,8 +103,6 @@ export default function Login({ onLogin }: LoginScreenProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor:
-        "#f5f5f5",
     width: Dimensions.get("window").width
   }
   ,
@@ -113,19 +125,13 @@ const styles = StyleSheet.create({
     color: "#2196F3",
     marginBottom: 10,
     textAlign: "center",
+    fontFamily: 'YekanBakh',
+    fontSize: 25,
   },
   subtitle: {
     color: "#666",
-    fontSize: 16,
     textAlign: "center",
-  },
-  card: {
-    borderRadius: 15,
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    fontFamily: 'YekanBakh'
   },
   inputContainer: {
     marginBottom: 15,
@@ -136,8 +142,17 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     marginTop: 10,
   },
+  button: {
+    backgroundColor: '#1E5A99',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
   buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: 'YekanBakh'
   },
 })

@@ -40,7 +40,6 @@ export default function HomeScreen() {
           ) : (
               <Login onLogin={() => setIsAuthenticated(true)} />
           )}
-          {Platform.OS === 'web' && <WebBadge />}
         </SafeAreaView>
       </ThemedView>
   );
@@ -51,6 +50,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     flexDirection: 'row',
+    backgroundColor: '#f5f5f5'
   },
   safeArea: {
     flex: 1,
