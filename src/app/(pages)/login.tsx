@@ -1,14 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import {View, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, Text, Dimensions} from "react-native"
+import {View, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView, Text, Dimensions, Button, TextInput, Image} from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { apiService } from "@/services/apiService"
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {LoginFormType, loginSchema} from "@/app/(pages)/schemas";
-import Input from "@/components/ui/input";
-import Button from "@/components/ui/button";
 
 interface LoginScreenProps {
   onLogin: () => void
@@ -17,6 +15,10 @@ interface LoginScreenProps {
 export default function Login({ onLogin }: LoginScreenProps) {
   const {handleSubmit, control} = useForm({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
   });
   const [loading, setLoading] = useState(false)
 
@@ -38,7 +40,7 @@ export default function Login({ onLogin }: LoginScreenProps) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.logoContainer}>
-            <img alt='' src={"/placeholder.svg?height=120&width=120"} style={styles.logo} />
+            <Image alt='' source={require("@/assets/images/expo-logo.png")} style={styles.logo} />
             <Text style={styles.title}>
               باشگاه ورزشی
             </Text>
@@ -46,22 +48,17 @@ export default function Login({ onLogin }: LoginScreenProps) {
           </View>
 
           <View style={styles.card}>
-            <form
-                onSubmit={handleSubmit(handleLogin, console.error)}
-                className='flex flex-col justify-center items-center gap-6 my-4'
-            >
               <Controller
                   control={control}
                   name='username'
                   render={({field, fieldState: {error}}) => (
-                      <Input
+                      <TextInput
                           {...field}
-                          onChange={value => {
-                            field.onChange(value);
-                          }}
+                          value={field.value}
+                          onChangeText={field.onChange}
+                          onBlur={field.onBlur}
                           placeholder={'User name'}
                           className='w-full'
-                          errorMessage={!!error?.message ? error.message : undefined}
                       />
                   )}
               />
@@ -69,26 +66,20 @@ export default function Login({ onLogin }: LoginScreenProps) {
                   control={control}
                   name='password'
                   render={({field, fieldState: {error}}) => (
-                      <Input
+                      <TextInput
                           {...field}
-                          onChange={value => {
-                            field.onChange(value);
-                          }}
+                          value={field.value}
+                          onChangeText={field.onChange}
+                          onBlur={field.onBlur}
                           placeholder={'Password'}
                           className='w-full [&>div]:bg-white rounded-2xl'
-                          errorMessage={!!error?.message ? error.message : undefined}
                       />
                   )}
               />
               <Button
-                  type='submit'
-                  variant='secondary'
-                  className='w-full'
-                  loading={loading}
-              >
-                submit
-              </Button>
-            </form>
+                  title='ورود'
+                  onPress={handleSubmit(handleLogin)}
+              />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

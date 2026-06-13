@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
 import { router } from "expo-router";
-import {View, StyleSheet, ScrollView, RefreshControl, Alert, Text, Dimensions, Platform} from "react-native"
+import {View, StyleSheet, ScrollView, RefreshControl, Alert, Text, Dimensions, Platform, Button} from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { apiService } from "@/services/apiService"
-import Button from "@/components/ui/button";
 
 
 interface DashboardStats {
@@ -105,9 +104,9 @@ export default function Dashboard() {
             داشبورد مدیریت
           </Text>
           <Button
+              title='خروج'
               onPress={handleLogout}
-              style={styles.logoutButton}
-          >خروج</Button>
+          />
         </View>
 
         <View style={styles.statsGrid}>
