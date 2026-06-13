@@ -45,7 +45,15 @@
         }
       ],
       "expo-image",
-      "expo-font"
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/YekanBakh-Regular.ttf",
+            "./assets/fonts/YekanBakh-Bold.ttf"
+          ]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
