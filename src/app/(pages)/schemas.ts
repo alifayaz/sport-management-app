@@ -2,9 +2,7 @@ import { regexList } from '@/utils/regex';
 import { z } from 'zod';
 
 export type LoginFormType = z.infer<typeof loginSchema>;
-export type ForgotPasswordType = z.infer<typeof forgotPasswordSchema>;
-export type ResetPasswordType = z.infer<typeof resetPasswordSchema>;
-export type LoginWithPasswordType = z.infer<typeof loginWithPasswordSchema>;
+export type RegisterFormType = z.infer<typeof registerSchema>;
 
 export const loginSchema = z.object({
   username: z
@@ -12,8 +10,12 @@ export const loginSchema = z.object({
   password: z.string({ error: 'requiredPassword' }).min(5, 'minLength'),
 });
 
-export const OTPSchema = z.object({
-  otp: z.string(),
+export const registerSchema = z.object({
+  username: z.string({ error: 'required' }),
+  password: z.string({ error: 'requiredPassword' }).min(5, 'minLength'),
+  first_name: z.string(),
+  last_name: z.string(),
+  mobile: z.string(),
 });
 
 export const loginWithPasswordSchema = z.object({

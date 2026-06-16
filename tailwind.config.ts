@@ -12,6 +12,9 @@ module.exports = {
 				yekan: ["YekanBakh"],
 				yekanBold: ["YekanBakhBold"],
 			},
+			colors: {
+				primary: '#2196F3',
+			},
 		},
 	},
 	plugins: [],
