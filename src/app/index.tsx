@@ -1,12 +1,8 @@
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
 import AsyncStorage from "@react-native-async-storage/async-storage"
-
-import { ThemedView } from '@/components/themed-view';
+import { Redirect } from "expo-router";
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import {useEffect, useState} from "react";
-import Login from "@/app/(pages)/login";
-import Dashboard from "@/app/(pages)/dashboard";
 
 export default function HomeScreen() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -32,15 +28,9 @@ export default function HomeScreen() {
   }
 
   return (
-      <ThemedView style={styles.container}>
-        <SafeAreaView style={styles.safeArea}>
-          {isAuthenticated ? (
-              <Dashboard />
-          ) : (
-              <Login onLogin={() => setIsAuthenticated(true)} />
-          )}
-        </SafeAreaView>
-      </ThemedView>
+      isAuthenticated
+          ? <Redirect href="/dashboard" />
+          : <Redirect href="/login" />
   );
 }
 

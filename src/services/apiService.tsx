@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import Constants from "expo-constants";
-import {LoginFormType, RegisterFormType} from "@/app/(pages)/schemas";
+import {LoginFormType, RegisterFormType} from "@/types/schemas";
 
 const API_BASE_URL = Constants.expoConfig?.extra?.API_URL;
 const APP_VERSION = Constants.expoConfig?.extra?.APP_VERSION;
@@ -21,13 +21,13 @@ class ApiService {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: body.username,
+        username: body.username.trim(),
         password: body.password
       }),
     })
 
     if (!response.ok) {
-      throw new Error("Login failed")
+      throw new Error(response.statusText)
     }
 
     return response.json()
@@ -41,8 +41,9 @@ class ApiService {
       },
       body: JSON.stringify(body),
     })
+
     if (!response.ok) {
-      throw new Error("Register failed")
+      throw new Error(response.statusText)
     }
 
     return response.json()

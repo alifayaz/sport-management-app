@@ -1,21 +1,9 @@
 import { useState, useEffect } from "react"
 import { router } from "expo-router";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  Alert,
-  Text,
-  Dimensions,
-  Platform,
-  Button,
-  Pressable
-} from "react-native"
+import {View, StyleSheet, ScrollView, RefreshControl, Alert, Text, Dimensions, Platform, Button} from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { apiService } from "@/services/apiService"
 import HamburgerMenu from "@/components/hamburgerMenu";
-import {Ionicons} from "@expo/vector-icons";
 
 
 interface DashboardStats {
@@ -34,7 +22,7 @@ interface UnpaidMember {
   amount: number
 }
 
-export default function Dashboard() {
+export default function Reports() {
   const [stats, setStats] = useState<DashboardStats>({
     totalMembers: 0,
     activeMembers: 0,
@@ -76,7 +64,6 @@ export default function Dashboard() {
 
       if (confirmed) {
         await AsyncStorage.clear();
-        router.replace("/");
       }
     } else {
       Alert.alert(
@@ -95,6 +82,7 @@ export default function Dashboard() {
           ]
       );
     }
+    router.replace("/");
   };
 
   const StatCard = ({ title, value, color }: any) => (
@@ -115,17 +103,17 @@ export default function Dashboard() {
       >
         <View style={styles.header}>
           <HamburgerMenu />
-          <Pressable style={styles.button} onPress={handleLogout}>
-            <Ionicons name="log-out" color='#1E5A99' size={25} />
-            <Text style={styles.buttonText}>خروج</Text>
-          </Pressable>
+          <Text style={styles.welcomeText}>
+            گزارشات
+          </Text>
+          <Button
+              title='خروج'
+              onPress={handleLogout}
+          />
         </View>
 
         <View style={styles.statsGrid}>
-          <StatCard title="کل اعضا" value={stats.totalMembers} icon="people" color="#2196F3" />
-          <StatCard title="اعضای فعال" value={stats.activeMembers} icon="checkmark-circle" color="#4CAF50" />
-          <StatCard title="بدهکاران" value={stats.unpaidMembers} icon="warning" color="#FF9800" />
-          <StatCard title="درآمد ماهانه" value={stats.totalRevenue} icon="wallet" color="#9C27B0" />
+
         </View>
       </ScrollView>
   )
@@ -144,6 +132,14 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "white",
     elevation: 2,
+  },
+  welcomeText: {
+    color: "#333",
+  },
+  logoutButton: {
+    backgroundColor: "#F44336",
+    borderRadius: 20,
+    paddingHorizontal: 15,
   },
   statsGrid: {
     padding: 10,
@@ -169,18 +165,19 @@ const styles = StyleSheet.create({
     color: "#666",
     marginTop: 5,
   },
-  buttonText: {
-    color: '#1E5A99',
-    fontSize: 13,
-    fontWeight: 'bold',
-    fontFamily: 'YekanBakh',
+  unpaidCard: {
+    margin: 10,
+    borderRadius: 10,
+    elevation: 3,
   },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 5
+  sectionTitle: {
+    marginBottom: 15,
+    color: "#333",
+  },
+  noDataText: {
+    textAlign: "center",
+    color: "#666",
+    fontStyle: "italic",
+    padding: 20,
   },
 })

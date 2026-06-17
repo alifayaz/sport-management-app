@@ -15,34 +15,35 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native"
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { apiService } from "@/services/apiService"
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {RegisterFormType, registerSchema} from "@/app/(pages)/schemas";
-import {router} from "expo-router";
-import {Ionicons} from "@expo/vector-icons";
+import {LoginFormType, loginSchema} from "@/types/schemas";
+import { router } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
+interface LoginScreenProps {
+  onLogin: () => void
+}
 
-export default function Register() {
+export default function Login({ onLogin }: LoginScreenProps) {
   const {handleSubmit, control} = useForm({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
-      first_name: "",
-      last_name: "",
-      mobile: ""
     },
   });
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleRegister = async (body: RegisterFormType) => {
+  const handleLogin = async (body: LoginFormType) => {
     setLoading(true)
     try {
-      await apiService.register(body)
-      Alert.alert("موفق", "ثبت نام با موفقیت انجام شد")
-      router.push('/login')
+      const response = await apiService.login(body)
+      await AsyncStorage.setItem("authToken", response?.data?.token)
+      router.replace("/dashboard");
     } catch (error) {
       Alert.alert("خطا", "نام کاربری یا رمز عبور اشتباه است")
     } finally {
@@ -62,34 +63,6 @@ export default function Register() {
           </View>
 
           <View className='flex flex-col gap-4'>
-            <Controller
-                control={control}
-                name='first_name'
-                render={({field, fieldState: {error}}) => (
-                    <TextInput
-                        {...field}
-                        value={field.value}
-                        onChangeText={field.onChange}
-                        onBlur={field.onBlur}
-                        placeholder='نام'
-                        className='border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0'
-                    />
-                )}
-            />
-            <Controller
-                control={control}
-                name='last_name'
-                render={({field, fieldState: {error}}) => (
-                    <TextInput
-                        {...field}
-                        value={field.value}
-                        onChangeText={field.onChange}
-                        onBlur={field.onBlur}
-                        placeholder='نام خانوادگی'
-                        className='border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0'
-                    />
-                )}
-            />
               <Controller
                   control={control}
                   name='username'
@@ -104,20 +77,6 @@ export default function Register() {
                       />
                   )}
               />
-            <Controller
-                control={control}
-                name='mobile'
-                render={({field, fieldState: {error}}) => (
-                    <TextInput
-                        {...field}
-                        value={field.value}
-                        onChangeText={field.onChange}
-                        onBlur={field.onBlur}
-                        placeholder='شماره موبایل'
-                        className='border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0'
-                    />
-                )}
-            />
             <View className='w-full border border-gray-300 rounded-md flex-row items-center px-2'>
               <Pressable onPress={() => setShowPassword(!showPassword)}>
                 <Ionicons
@@ -136,24 +95,27 @@ export default function Register() {
                           onChangeText={field.onChange}
                           onBlur={field.onBlur}
                           placeholder='رمز عبور'
-                          textContentType='password'
                           secureTextEntry={!showPassword}
-                          className='flex-1 h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0'
+                          className='flex-1 h-12 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0'
                       />
                   )}
               />
             </View>
-            <Pressable style={styles.button} onPress={handleSubmit(handleRegister)}>
+
+            <Pressable style={styles.button} onPress={handleSubmit(handleLogin)}>
               {loading ? (
                   <ActivityIndicator color="#fff" />
-              ) : (<Text style={styles.buttonText}>ثبت نام</Text>)}
+              ) : (<Text style={styles.buttonText}>ورود</Text>)}
             </Pressable>
-            <View className='flex-row gap-2'>
+            <View className='flex-row gap-2 mt-2'>
               <Text
-                  onPress={() => router.push('/login')}
-                  className='font-yekan mt-2 text-primary'
+                  onPress={() => router.push('/register')}
+                  className='font-yekan text-primary'
               >
-                ورود به حساب کاربری
+               ثبت نام
+              </Text>
+              <Text className='font-yekan'>
+                حساب کاربری ندارید؟
               </Text>
             </View>
           </View>
