@@ -13,7 +13,8 @@ module.exports = {
 				yekanBold: ["YekanBakhBold"],
 			},
 			colors: {
-				primary: '#2196F3',
+				primary: '#1E5A99',
+				primaryLight: '#dbeaff'
 			},
 		},
 	},

@@ -4,8 +4,12 @@ import "../global.css";
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { Slot } from 'expo-router';
 import {useFonts} from "expo-font";
+import { I18nManager } from "react-native";
 
-export default function TabLayout() {
+I18nManager.allowRTL(true);
+I18nManager.forceRTL(true);
+
+export default function MainLayout() {
   const colorScheme = useColorScheme();
     const [fontsLoaded] = useFonts({
         YekanBakh: require('../../assets/fonts/YekanBakh-Regular.ttf'),

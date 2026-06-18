@@ -49,9 +49,9 @@ class ApiService {
     return response.json()
   }
 
-  async getDashboardStats() {
+  async getMyAvailable() {
     const headers = await this.getAuthHeaders()
-    const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/dashboard/stats`, {
+    const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/availabilities/me`, {
       headers,
     })
 
@@ -59,14 +59,20 @@ class ApiService {
       throw new Error("Failed to fetch dashboard stats")
     }
 
-    // Mock data for demonstration
-    return {
-      totalMembers: 150,
-      activeMembers: 142,
-      unpaidMembers: 8,
-      totalRevenue: 45000000,
-      monthlyExpenses: 12000000,
+    return response.json()
+  }
+
+  async getAvailableList() {
+    const headers = await this.getAuthHeaders()
+    const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/availabilities`, {
+      headers,
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch dashboard stats")
     }
+
+    return response.json()
   }
 
   async getUnpaidMembers() {

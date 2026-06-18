@@ -27,7 +27,7 @@ interface LoginScreenProps {
   onLogin: () => void
 }
 
-export default function Login({ onLogin }: LoginScreenProps) {
+export default function Login() {
   const {handleSubmit, control} = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -55,7 +55,7 @@ export default function Login({ onLogin }: LoginScreenProps) {
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.logoContainer}>
-            <Image alt='' source={require("@/assets/images/logo.webp")} style={styles.logo} />
+            <Image alt='' source={require("@/assets/images/logo.jpg")} style={styles.logo} />
             <Text style={styles.title}>
               بازیار
             </Text>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    color: "#2196F3",
+    color: "#1E5A99",
     marginBottom: 10,
     textAlign: "center",
     fontFamily: 'YekanBakh',
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   loginButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#1E5A99",
     borderRadius: 25,
     paddingVertical: 15,
     marginTop: 10,

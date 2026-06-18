@@ -5,9 +5,11 @@ import {
     Text,
     TouchableOpacity,
     StyleSheet,
-    Pressable,
+    Pressable, Platform, Alert,
 } from "react-native";
 import { router } from "expo-router";
+import {Ionicons} from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HamburgerMenu() {
     const [visible, setVisible] = useState(false);
@@ -15,6 +17,35 @@ export default function HamburgerMenu() {
     const navigate = (path: string) => {
         setVisible(false);
         router.push(path as any);
+    };
+
+    const handleLogout = async () => {
+        if (Platform.OS === "web") {
+            const confirmed = window.confirm(
+                "آیا مطمئن هستید که می‌خواهید خارج شوید؟"
+            );
+
+            if (confirmed) {
+                await AsyncStorage.clear();
+                router.replace("/");
+            }
+        } else {
+            Alert.alert(
+                "خروج",
+                "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
+                [
+                    { text: "لغو", style: "cancel" },
+                    {
+                        text: "خروج",
+                        style: "destructive",
+                        onPress: async () => {
+                            await AsyncStorage.clear();
+                            router.replace("/");
+                        },
+                    },
+                ]
+            );
+        }
     };
 
     return (
@@ -80,7 +111,10 @@ export default function HamburgerMenu() {
                             style={styles.closeButton}
                             onPress={() => setVisible(false)}
                         >
-                            <Text style={styles.closeText}>بستن</Text>
+                            <Pressable style={styles.button} onPress={handleLogout}>
+                                <Ionicons name="log-out" color='#1E5A99' size={25} />
+                                <Text style={styles.buttonText}>خروج</Text>
+                            </Pressable>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -96,11 +130,12 @@ const styles = StyleSheet.create({
 
     menuIcon: {
         fontSize: 28,
+        color: '#1E5A99',
     },
 
     overlay: {
         flex: 1,
-        flexDirection: "row",
+        flexDirection: "row-reverse",
     },
 
     backdrop: {
@@ -114,6 +149,7 @@ const styles = StyleSheet.create({
         paddingTop: 60,
         paddingHorizontal: 20,
         elevation: 10,
+        marginLeft: "auto",
     },
 
     title: {
@@ -121,6 +157,8 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 25,
         textAlign: "right",
+        fontFamily: 'YekanBakh',
+        color: '#1E5A99',
     },
 
     menuItem: {
@@ -130,8 +168,9 @@ const styles = StyleSheet.create({
     },
 
     menuText: {
-        fontSize: 16,
+        fontSize: 14,
         textAlign: "right",
+        fontFamily: 'YekanBakh'
     },
 
     closeButton: {
@@ -144,5 +183,20 @@ const styles = StyleSheet.create({
     closeText: {
         textAlign: "center",
         fontWeight: "bold",
+    },
+    buttonText: {
+        color: '#1E5A99',
+        fontSize: 13,
+        fontWeight: 'bold',
+        fontFamily: 'YekanBakh',
+    },
+    button: {
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 5
     },
 });

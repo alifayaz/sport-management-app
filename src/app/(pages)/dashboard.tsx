@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { router } from "expo-router";
 import {
   View,
   StyleSheet,
@@ -8,53 +7,37 @@ import {
   Alert,
   Text,
   Dimensions,
-  Platform,
-  Button,
-  Pressable
 } from "react-native"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 import { apiService } from "@/services/apiService"
-import HamburgerMenu from "@/components/hamburgerMenu";
-import {Ionicons} from "@expo/vector-icons";
 
-
-interface DashboardStats {
-  totalMembers: number
-  activeMembers: number
-  unpaidMembers: number
-  totalRevenue: number
-  monthlyExpenses: number
-}
-
-interface UnpaidMember {
-  id: string
-  name: string
-  avatar?: string
-  daysOverdue: number
-  amount: number
+interface SportList {
+  sport: string,
+  arena_type: string,
+  arena_name: string,
+  start_time: string,
+  end_time: string,
+  status: string,
+  location: {
+    lat: string,
+    lng: string
+  }
 }
 
 export default function Dashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalMembers: 0,
-    activeMembers: 0,
-    unpaidMembers: 0,
-    totalRevenue: 0,
-    monthlyExpenses: 0,
-  })
-  const [unpaidMembers, setUnpaidMembers] = useState<UnpaidMember[]>([])
+  const [data, setData] = useState<SportList[]>([])
+  const [listData, setListData] = useState<SportList[]>([])
   const [refreshing, setRefreshing] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    //loadDashboardData()
+    loadDashboardData()
   }, [])
 
   const loadDashboardData = async () => {
     try {
-      const [statsData, unpaidData] = await Promise.all([apiService.getDashboardStats(), apiService.getUnpaidMembers()])
-      setStats(statsData)
-      setUnpaidMembers(unpaidData)
+      const [data, listData] = await Promise.all([apiService.getMyAvailable(), apiService.getAvailableList()])
+      setData(data?.data)
+      setListData(listData?.data)
     } catch (error) {
       Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
     } finally {
@@ -68,42 +51,25 @@ export default function Dashboard() {
     setRefreshing(false)
   }
 
-  const handleLogout = async () => {
-    if (Platform.OS === "web") {
-      const confirmed = window.confirm(
-          "آیا مطمئن هستید که می‌خواهید خارج شوید؟"
-      );
-
-      if (confirmed) {
-        await AsyncStorage.clear();
-        router.replace("/");
-      }
-    } else {
-      Alert.alert(
-          "خروج",
-          "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
-          [
-            { text: "لغو", style: "cancel" },
-            {
-              text: "خروج",
-              style: "destructive",
-              onPress: async () => {
-                await AsyncStorage.clear();
-                router.replace("/");
-              },
-            },
-          ]
-      );
-    }
-  };
-
-  const StatCard = ({ title, value, color }: any) => (
-      <View style={[styles.statCard, { borderLeftColor: color }]}>
+  const StatCard = ({ name, sport, status, date, cardType }: any) => (
+      <View style={styles.statCard}>
         <View style={styles.statContent}>
-          <View>
-            <Text style={styles.statValue}>{value.toLocaleString()}</Text>
-            <Text style={styles.statTitle}>{title}</Text>
+          <View className='flex justify-center'>
+            <Text style={styles.statTitle} className='font-yekan'>ورزش</Text>
+            <Text style={styles.statValue}>{sport}</Text>
           </View>
+          <View className='flex justify-center'>
+            <Text style={styles.statTitle}>مکان</Text>
+            <Text style={styles.statValue}>{name}</Text>
+          </View>
+          <View className='flex justify-center'>
+            <Text style={styles.statTitle}>وضعیت</Text>
+            <Text style={styles.statValue}>{status}</Text>
+          </View>
+        </View>
+        <View style={styles.statContent}>
+          <Text style={styles.statTitle}>تاریخ</Text>
+          <Text style={styles.statValue}>{date}</Text>
         </View>
       </View>
   )
@@ -113,19 +79,17 @@ export default function Dashboard() {
           style={styles.container}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <View style={styles.header}>
-          <HamburgerMenu />
-          <Pressable style={styles.button} onPress={handleLogout}>
-            <Ionicons name="log-out" color='#1E5A99' size={25} />
-            <Text style={styles.buttonText}>خروج</Text>
-          </Pressable>
+        <Text className='text-2xl text-primary font-yekanBold mt-4'>بازی های من</Text>
+        <View className='flex mt-4'>
+          {data?.map((item, index) => {
+            return <StatCard key={index} name={item.arena_name} sport={item.sport} status={item.status} date={item.start_time} />
+          })}
         </View>
-
-        <View style={styles.statsGrid}>
-          <StatCard title="کل اعضا" value={stats.totalMembers} icon="people" color="#2196F3" />
-          <StatCard title="اعضای فعال" value={stats.activeMembers} icon="checkmark-circle" color="#4CAF50" />
-          <StatCard title="بدهکاران" value={stats.unpaidMembers} icon="warning" color="#FF9800" />
-          <StatCard title="درآمد ماهانه" value={stats.totalRevenue} icon="wallet" color="#9C27B0" />
+        <Text className='text-2xl text-primary font-yekanBold mt-4'>بازی های پیشنهادی</Text>
+        <View className='flex mt-4'>
+          {listData?.map((item, index) => {
+            return <StatCard key={index} name={item.arena_name} sport={item.sport} status={item.status} date={item.start_time} />
+          })}
         </View>
       </ScrollView>
   )
@@ -135,52 +99,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    width: Dimensions.get("window").width
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "white",
-    elevation: 2,
-  },
-  statsGrid: {
-    padding: 10,
+    width: Dimensions.get("window").width  * 0.95,
+    margin: 'auto',
   },
   statCard: {
-    borderRadius: 10,
-    marginBottom: 10,
-    borderLeftWidth: 4,
+    backgroundColor: "#dbeaff",
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 12,
+    borderRightWidth: 6,
+    borderRightColor: "#1E5A99",
+    boxShadow: "0px 4px 10px rgba(30, 90, 153, 0.12)",
     elevation: 3,
+    gap: 20
   },
   statContent: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
   },
-  statValue: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#333",
-  },
   statTitle: {
-    fontSize: 14,
-    color: "#666",
-    marginTop: 5,
-  },
-  buttonText: {
-    color: '#1E5A99',
-    fontSize: 13,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#1E5A99",
+    display: 'flex',
+    justifyContent: 'center',
     fontFamily: 'YekanBakh',
   },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 5
+
+  statValue: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 4,
+    fontFamily: 'YekanBakh',
+    display: 'flex',
+    textTransform: 'capitalize',
+    justifyContent: 'center'
   },
 })

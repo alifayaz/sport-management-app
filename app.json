@@ -4,25 +4,25 @@
     "slug": "sport-management",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo.webp",
+    "icon": "./assets/images/logo.jpg",
     "scheme": "sportmanagement",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/images/logo.webp"
+      "icon": "./assets/images/logo.jpg"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/logo.webp",
-        "backgroundImage": "./assets/images/logo.webp",
-        "monochromeImage": "./assets/images/logo.webp"
+        "foregroundImage": "./assets/images/logo.jpg",
+        "backgroundImage": "./assets/images/logo.jpg",
+        "monochromeImage": "./assets/images/logo.jpg"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.alifayaz.sportmanagement"
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/logo.webp"
+      "favicon": "./assets/images/logo.jpg"
     },
     "extra": {
       "API_URL": "http://192.168.11.10:3000",
@@ -39,7 +39,7 @@
         {
           "backgroundColor": "#208AEF",
           "android": {
-            "image": "./assets/images/logo.webp",
+            "image": "./assets/images/logo.jpg",
             "imageWidth": 76
           }
         }
