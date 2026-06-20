@@ -78,3 +78,12 @@ export const sportNameFa: Record<SportType, string> = {
 };
 
 export type ArenaType = "outdoor" | "indoor";
+
+export type UserInfo = {
+  first_name: string,
+  last_name: string,
+  username: string,
+  gender: string,
+  rate: string,
+  age: number
+}

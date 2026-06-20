@@ -1,18 +1,14 @@
-import React, { useState } from "react";
-import {
-    Modal,
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    Pressable, Platform, Alert,
-} from "react-native";
-import { router } from "expo-router";
+import React, {useEffect, useState} from "react";
+import {Alert, Modal, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import {router} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {apiService} from "@/services/apiService";
+import {UserInfo} from "@/types/schemas";
 
 export default function HamburgerMenu() {
     const [visible, setVisible] = useState(false);
+    const [userData, setUserData] = useState<UserInfo>()
 
     const navigate = (path: string) => {
         setVisible(false);
@@ -48,6 +44,20 @@ export default function HamburgerMenu() {
         }
     };
 
+    const loadUserData = async () => {
+        try {
+            const {data} = await apiService.getUserInfo()
+            setUserData(data)
+        } catch (error) {
+            Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
+        } finally {
+        }
+    }
+
+    useEffect(() => {
+        loadUserData()
+    }, [])
+
     return (
         <>
             <TouchableOpacity
@@ -70,6 +80,16 @@ export default function HamburgerMenu() {
                     />
 
                     <View style={styles.drawer}>
+                        <View className='flex flex-row justify-between'>
+                            <View className='flex flex-row justify-between gap-2 text-right'>
+                                <Text>{userData?.first_name}</Text>
+                                <Text>{userData?.last_name}</Text>
+                            </View>
+                            <View className='flex flex-row justify-between items-center gap-2'>
+                                <Text>{userData?.rate}</Text>
+                                <Ionicons name="star" color='#ffce10' size={20} />
+                            </View>
+                        </View>
                         <Text style={styles.title}>منو</Text>
 
                         <TouchableOpacity
@@ -132,7 +152,7 @@ const styles = StyleSheet.create({
     drawer: {
         width: 280,
         backgroundColor: "#fff",
-        paddingTop: 60,
+        paddingTop: 40,
         paddingHorizontal: 20,
         elevation: 10,
         marginLeft: "auto",
@@ -142,6 +162,7 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold",
         marginBottom: 25,
+        marginTop: 20,
         fontFamily: 'YekanBakh',
         color: '#1E5A99',
     },

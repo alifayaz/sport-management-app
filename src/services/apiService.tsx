@@ -90,6 +90,19 @@ class ApiService {
     return response.json()
   }
 
+  async getUserInfo() {
+    const headers = await this.getAuthHeaders()
+    const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/users/info`, {
+      headers,
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch user info")
+    }
+
+    return response.json()
+  }
+
   async getUnpaidMembers() {
     const headers = await this.getAuthHeaders()
     const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/members/unpaid`, {
