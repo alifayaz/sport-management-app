@@ -33,7 +33,7 @@ export default function PagesLayout() {
                 color: '#1E5A99',
             },
             tabBarInactiveTintColor: "#1E5A99",
-            tabBarActiveTintColor: "#fdcdbb",
+            tabBarActiveTintColor: "#FF5722",
         }}>
             <Tabs.Screen
                 name="dashboard"
@@ -56,16 +56,6 @@ export default function PagesLayout() {
             />
 
             <Tabs.Screen
-                name="payments"
-                options={{
-                    title: "پرداخت‌ها",
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="card" color={color} size={size} />
-                    ),
-                }}
-            />
-
-            <Tabs.Screen
                 name="reports"
                 options={{
                     title: "گزارشات",
@@ -74,6 +64,25 @@ export default function PagesLayout() {
                     ),
                 }}
             />
+
+            <Tabs.Screen
+                name="offerGames"
+                options={{
+                    title: "پیشنهادی",
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="sparkles-outline" color={color} size={size} />
+                    ),
+                }}
+            />
+
+            <Tabs.Screen
+                name="myGames"
+                options={{
+                    title: "بازی های من",
+                    href: null,
+                }}
+            />
+
         </Tabs>
     );
 }

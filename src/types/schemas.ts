@@ -40,3 +40,41 @@ export const resetPasswordSchema = z
     message: 'duplicate',
     path: ['repeatPassword'],
   });
+
+export type MatchStatus = "active" | "expire" | "waiting";
+
+export type MatchData = {
+  id: string
+  sport: SportType;
+  arena_type: ArenaType;
+  arena_name: string;
+  start_time: string;
+  end_time: string;
+  status: MatchStatus;
+  user: {
+    age: number,
+    first_name: string,
+    last_name: string,
+    gender: string,
+    rate: string
+  },
+};
+
+export type SportType =
+    | "football"
+    | "futsal"
+    | "volleyball"
+    | "badminton"
+    | "padel"
+    | "tennis";
+
+export const sportNameFa: Record<SportType, string> = {
+  football: "فوتبال",
+  futsal: "فوتسال",
+  volleyball: "والیبال",
+  badminton: "بدمینتون",
+  padel: "پدل",
+  tennis: "تنیس",
+};
+
+export type ArenaType = "outdoor" | "indoor";

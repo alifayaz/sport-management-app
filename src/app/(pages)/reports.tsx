@@ -3,7 +3,7 @@ import {View, StyleSheet, ScrollView, RefreshControl, Alert, Text, Dimensions} f
 import { apiService } from "@/services/apiService"
 
 
-interface DashboardStats {
+interface Data {
   totalMembers: number
   activeMembers: number
   unpaidMembers: number
@@ -11,35 +11,20 @@ interface DashboardStats {
   monthlyExpenses: number
 }
 
-interface UnpaidMember {
-  id: string
-  name: string
-  avatar?: string
-  daysOverdue: number
-  amount: number
-}
-
 export default function Reports() {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalMembers: 0,
-    activeMembers: 0,
-    unpaidMembers: 0,
-    totalRevenue: 0,
-    monthlyExpenses: 0,
-  })
-  const [unpaidMembers, setUnpaidMembers] = useState<UnpaidMember[]>([])
+  const [data, setData] = useState<Data>()
+
   const [refreshing, setRefreshing] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    //loadDashboardData()
+    loadData()
   }, [])
 
-  const loadDashboardData = async () => {
+  const loadData = async () => {
     try {
-      const [statsData, unpaidData] = await Promise.all([apiService.getMyAvailable(), apiService.getUnpaidMembers()])
-      setStats(statsData)
-      setUnpaidMembers(unpaidData)
+      const data = await apiService.getMyAvailable()
+      setData(data?.data)
     } catch (error) {
       Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
     } finally {
@@ -49,7 +34,7 @@ export default function Reports() {
 
   const onRefresh = async () => {
     setRefreshing(true)
-    await loadDashboardData()
+    await loadData()
     setRefreshing(false)
   }
 
@@ -58,7 +43,7 @@ export default function Reports() {
           style={styles.container}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <View style={styles.statsGrid}>
+        <View>
           <Text>test</Text>
         </View>
       </ScrollView>
@@ -70,8 +55,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     width: Dimensions.get("window").width
-  },
-  statsGrid: {
-    padding: 10,
   },
 })

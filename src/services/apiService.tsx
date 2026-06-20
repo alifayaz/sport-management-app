@@ -75,6 +75,21 @@ class ApiService {
     return response.json()
   }
 
+  async postAvailable(id: string) {
+    const headers = await this.getAuthHeaders()
+    const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/availabilities/request`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({availability_id: id})
+    })
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch dashboard stats")
+    }
+
+    return response.json()
+  }
+
   async getUnpaidMembers() {
     const headers = await this.getAuthHeaders()
     const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/members/unpaid`, {

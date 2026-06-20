@@ -54,7 +54,7 @@ export default function HamburgerMenu() {
                 onPress={() => setVisible(true)}
                 style={styles.menuButton}
             >
-                <Text style={styles.menuIcon}>☰</Text>
+                <Text style={styles.menuIcon}><Ionicons name="menu-sharp" color='#1E5A99' size={30} /></Text>
             </TouchableOpacity>
 
             <Modal
@@ -77,20 +77,6 @@ export default function HamburgerMenu() {
                             onPress={() => navigate("/dashboard")}
                         >
                             <Text style={styles.menuText}>داشبورد</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={() => navigate("/members")}
-                        >
-                            <Text style={styles.menuText}>اعضا</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            style={styles.menuItem}
-                            onPress={() => navigate("/payments")}
-                        >
-                            <Text style={styles.menuText}>پرداخت‌ها</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -156,7 +142,6 @@ const styles = StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold",
         marginBottom: 25,
-        textAlign: "right",
         fontFamily: 'YekanBakh',
         color: '#1E5A99',
     },
@@ -169,7 +154,6 @@ const styles = StyleSheet.create({
 
     menuText: {
         fontSize: 14,
-        textAlign: "right",
         fontFamily: 'YekanBakh'
     },
 

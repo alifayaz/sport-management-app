@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react"
 import {
-  View,
   StyleSheet,
   ScrollView,
   RefreshControl,
   Alert,
-  Text,
   Dimensions,
 } from "react-native"
 import { apiService } from "@/services/apiService"
+import DashboardCard from "@/components/dashboardCard";
+import {router} from "expo-router";
 
 interface SportList {
   sport: string,
@@ -51,46 +51,17 @@ export default function Dashboard() {
     setRefreshing(false)
   }
 
-  const StatCard = ({ name, sport, status, date, cardType }: any) => (
-      <View style={styles.statCard}>
-        <View style={styles.statContent}>
-          <View className='flex justify-center'>
-            <Text style={styles.statTitle} className='font-yekan'>ورزش</Text>
-            <Text style={styles.statValue}>{sport}</Text>
-          </View>
-          <View className='flex justify-center'>
-            <Text style={styles.statTitle}>مکان</Text>
-            <Text style={styles.statValue}>{name}</Text>
-          </View>
-          <View className='flex justify-center'>
-            <Text style={styles.statTitle}>وضعیت</Text>
-            <Text style={styles.statValue}>{status}</Text>
-          </View>
-        </View>
-        <View style={styles.statContent}>
-          <Text style={styles.statTitle}>تاریخ</Text>
-          <Text style={styles.statValue}>{date}</Text>
-        </View>
-      </View>
-  )
-
   return (
       <ScrollView
           style={styles.container}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <Text className='text-2xl text-primary font-yekanBold mt-4'>بازی های من</Text>
-        <View className='flex mt-4'>
-          {data?.map((item, index) => {
-            return <StatCard key={index} name={item.arena_name} sport={item.sport} status={item.status} date={item.start_time} />
-          })}
-        </View>
-        <Text className='text-2xl text-primary font-yekanBold mt-4'>بازی های پیشنهادی</Text>
-        <View className='flex mt-4'>
-          {listData?.map((item, index) => {
-            return <StatCard key={index} name={item.arena_name} sport={item.sport} status={item.status} date={item.start_time} />
-          })}
-        </View>
+        <DashboardCard
+            title="بازی های من" count={data?.length} icon='game-controller-outline' loading={loading} onPress={() => router.push('/myGames')}
+        />
+        <DashboardCard
+            title="بازی های پیشنهادی" count={listData?.length} icon='sparkles-outline' loading={loading} onPress={() => router.push('/offerGames')}
+        />
       </ScrollView>
   )
 }
