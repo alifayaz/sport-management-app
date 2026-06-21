@@ -9,6 +9,8 @@ const PRIMARY = '#1E5A99';
 type Props = {
   data: MatchData;
   onConfirm?: (id: string) => void;
+  onCancel?: (id: string) => void;
+  onDetail?: (id: string) => void;
   loading?: boolean;
   offerPage?: boolean;
 };
@@ -74,7 +76,14 @@ const StatusBadge = ({ status }: { status: MatchStatus }) => {
   );
 };
 
-const MyCard: React.FC<Props> = ({ data, onConfirm, loading, offerPage }) => {
+const MyCard: React.FC<Props> = ({
+  data,
+  onConfirm,
+  onCancel,
+  onDetail,
+  loading,
+  offerPage,
+}) => {
   const duration = getDuration(data.start_time, data.end_time);
 
   return (
@@ -139,6 +148,32 @@ const MyCard: React.FC<Props> = ({ data, onConfirm, loading, offerPage }) => {
             </View>
           )}
         </Pressable>
+      )}
+      {data.status === 'accepted' && (
+        <View className="flex flex-row justify-between items-center">
+          <Pressable
+            onPress={() => onCancel?.(data.id)}
+            className="w-1/3 mt-5 bg-red-400 rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <View className="flex flex-row items-center justify-center">
+                <Ionicons name="close-circle-outline" size={18} color="white" />
+                <Text className="text-white font-yekan mr-2">لغو بازی</Text>
+              </View>
+            )}
+          </Pressable>
+          <Pressable
+            onPress={() => onDetail?.(data.id)}
+            className="w-1/3 mt-5 bg-[#1E5A99] rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
+          >
+            <View className="flex flex-row items-center justify-center">
+              <Ionicons name="document-text-outline" size={18} color="white" />
+              <Text className="text-white font-yekan mr-2">جزئیات بازی</Text>
+            </View>
+          </Pressable>
+        </View>
       )}
     </View>
   );

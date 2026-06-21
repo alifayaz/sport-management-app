@@ -19,6 +19,7 @@ export default function MyGames() {
 
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadingId, setLoadingId] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -39,6 +40,30 @@ export default function MyGames() {
     }
   };
 
+  const cancelGame = async (id: string) => {
+    Alert.alert('خروج', 'آیا مطمئن هستید که می‌خواهید بازی را لغو کنید؟', [
+      { text: 'خیر', style: 'cancel' },
+      {
+        text: 'بله',
+        style: 'destructive',
+        onPress: async () => {
+          setLoadingId(id);
+          try {
+            await apiService.postCancelGame(id);
+            await loadData();
+            Alert.alert('موفق', 'بازی شما لغو شد.');
+          } catch (error) {
+            if (error) {
+              Alert.alert('خطا', error.toString());
+            }
+          } finally {
+            setLoadingId(null);
+          }
+        },
+      },
+    ]);
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
     await loadData();
@@ -52,12 +77,19 @@ export default function MyGames() {
   ) : data?.length ? (
     <ScrollView
       style={styles.container}
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
       {data.map((item, index) => (
-        <MyCard key={index} data={item} />
+        <MyCard
+          key={index}
+          data={item}
+          onCancel={cancelGame}
+          loading={loadingId === item.id}
+        />
       ))}
     </ScrollView>
   ) : (
@@ -71,5 +103,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     width: Dimensions.get('window').width * 0.95,
     margin: 'auto',
+    marginBottom: 20,
   },
 });

@@ -127,145 +127,20 @@ class ApiService {
     return response.json();
   }
 
-  async getUnpaidMembers() {
+  async postCancelGame(id: string) {
     const headers = await this.getAuthHeaders();
     const response = await fetch(
-      `${API_BASE_URL}/api/${APP_VERSION}/members/unpaid`,
-      {
-        headers,
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch unpaid members');
-    }
-
-    // Mock data for demonstration
-    return [
-      {
-        id: '1',
-        name: 'احمد محمدی',
-        avatar: '/placeholder.svg?height=50&width=50',
-        daysOverdue: 5,
-        amount: 300000,
-      },
-      {
-        id: '2',
-        name: 'فاطمه احمدی',
-        avatar: '/placeholder.svg?height=50&width=50',
-        daysOverdue: 12,
-        amount: 350000,
-      },
-    ];
-  }
-
-  async getAthletes() {
-    const headers = await this.getAuthHeaders();
-    const response = await fetch(
-      `${API_BASE_URL}/api/${APP_VERSION}/athletes`,
-      {
-        headers,
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch athletes');
-    }
-
-    // Mock data for demonstration
-    return [
-      {
-        id: '1',
-        name: 'علی',
-        lastName: 'رضایی',
-        avatar: '/placeholder.svg?height=60&width=60',
-        registrationDate: '2024-01-15',
-        monthlyFee: 300000,
-        weight: 75,
-        height: 180,
-        medicalIssues: '',
-        isPaid: true,
-      },
-      {
-        id: '2',
-        name: 'مریم',
-        lastName: 'احمدی',
-        avatar: '/placeholder.svg?height=60&width=60',
-        registrationDate: '2024-02-01',
-        monthlyFee: 350000,
-        weight: 60,
-        height: 165,
-        medicalIssues: 'مشکل زانو',
-        isPaid: false,
-      },
-    ];
-  }
-
-  async addAthlete(athleteData: any) {
-    const headers = await this.getAuthHeaders();
-    const response = await fetch(
-      `${API_BASE_URL}/api/${APP_VERSION}/athletes`,
+      `${API_BASE_URL}/api/${APP_VERSION}/availabilities/cancel`,
       {
         method: 'POST',
         headers,
-        body: JSON.stringify(athleteData),
+        body: JSON.stringify({ availability_id: id }),
       },
     );
 
     if (!response.ok) {
-      throw new Error('Failed to add athlete');
-    }
-
-    return response.json();
-  }
-
-  async getExpenses() {
-    const headers = await this.getAuthHeaders();
-    const response = await fetch(
-      `${API_BASE_URL}/api/${APP_VERSION}/expenses`,
-      {
-        headers,
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch expenses');
-    }
-
-    // Mock data for demonstration
-    return [
-      {
-        id: '1',
-        title: 'خرید دمبل جدید',
-        amount: 2500000,
-        category: 'تجهیزات',
-        date: '2024-01-10',
-        description: 'دمبل‌های 10 تا 50 کیلویی',
-      },
-      {
-        id: '2',
-        title: 'قبض برق',
-        amount: 800000,
-        category: 'برق و آب',
-        date: '2024-01-05',
-        description: '',
-      },
-    ];
-  }
-
-  async addExpense(expenseData: any) {
-    const headers = await this.getAuthHeaders();
-    const response = await fetch(
-      `${API_BASE_URL}/api/${APP_VERSION}/expenses`,
-      {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(expenseData),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error('Failed to add expense');
+      const result = await response.json();
+      throw new Error(result.message);
     }
 
     return response.json();

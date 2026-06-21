@@ -18,14 +18,6 @@ interface DashboardStats {
   monthlyExpenses: number;
 }
 
-interface UnpaidMember {
-  id: string;
-  name: string;
-  avatar?: string;
-  daysOverdue: number;
-  amount: number;
-}
-
 export default function Requests() {
   const [stats, setStats] = useState<DashboardStats>({
     totalMembers: 0,
@@ -34,7 +26,7 @@ export default function Requests() {
     totalRevenue: 0,
     monthlyExpenses: 0,
   });
-  const [unpaidMembers, setUnpaidMembers] = useState<UnpaidMember[]>([]);
+
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -44,12 +36,8 @@ export default function Requests() {
 
   const loadDashboardData = async () => {
     try {
-      const [statsData, unpaidData] = await Promise.all([
-        apiService.getMyAvailable(),
-        apiService.getUnpaidMembers(),
-      ]);
+      const [statsData] = await Promise.all([apiService.getMyAvailable()]);
       setStats(statsData);
-      setUnpaidMembers(unpaidData);
     } catch (error) {
       if (error) {
         Alert.alert('خطا', error.toString());

@@ -68,6 +68,8 @@ export default function OfferGames() {
     </View>
   ) : data?.length ? (
     <ScrollView
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }

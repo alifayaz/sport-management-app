@@ -80,14 +80,7 @@ export default function Login() {
               />
             )}
           />
-          <View className="w-full border border-gray-300 rounded-md flex-row items-center px-2">
-            <Pressable onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                size={24}
-                color="gray"
-              />
-            </Pressable>
+          <View className="w-full border border-gray-300 rounded-md flex-row items-center px-2 gap-2">
             <Controller
               control={control}
               name="password"
@@ -103,6 +96,13 @@ export default function Login() {
                 />
               )}
             />
+            <Pressable onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                size={24}
+                color="gray"
+              />
+            </Pressable>
           </View>
 
           <Pressable style={styles.button} onPress={handleSubmit(handleLogin)}>
@@ -112,14 +112,14 @@ export default function Login() {
               <Text style={styles.buttonText}>ورود</Text>
             )}
           </Pressable>
-          <View className="flex-row gap-2 mt-2">
+          <View className="flex-row gap-2 mt-2 justify-end">
+            <Text className="font-yekan">حساب کاربری ندارید؟</Text>
             <Text
               onPress={() => router.push('/register')}
               className="font-yekan text-primary"
             >
               ثبت نام
             </Text>
-            <Text className="font-yekan">حساب کاربری ندارید؟</Text>
           </View>
         </View>
       </ScrollView>

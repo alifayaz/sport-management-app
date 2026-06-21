@@ -124,14 +124,7 @@ export default function Register() {
               />
             )}
           />
-          <View className="w-full border border-gray-300 rounded-md flex-row items-center px-2">
-            <Pressable onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                size={24}
-                color="gray"
-              />
-            </Pressable>
+          <View className="w-full border border-gray-300 rounded-md flex-row items-center px-2 gap-2">
             <Controller
               control={control}
               name="password"
@@ -144,10 +137,17 @@ export default function Register() {
                   placeholder="رمز عبور"
                   textContentType="password"
                   secureTextEntry={!showPassword}
-                  className="flex-1 h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
+                  className="flex-1 h-12 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
                 />
               )}
             />
+            <Pressable onPress={() => setShowPassword(!showPassword)}>
+              <Ionicons
+                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                size={24}
+                color="gray"
+              />
+            </Pressable>
           </View>
           <Pressable
             style={styles.button}
@@ -159,7 +159,7 @@ export default function Register() {
               <Text style={styles.buttonText}>ثبت نام</Text>
             )}
           </Pressable>
-          <View className="flex-row gap-2">
+          <View className="flex-row gap-2 justify-end">
             <Text
               onPress={() => router.push('/login')}
               className="font-yekan mt-2 text-primary"
