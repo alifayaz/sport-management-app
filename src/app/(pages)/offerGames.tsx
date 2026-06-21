@@ -1,41 +1,50 @@
-import {useEffect, useState} from "react"
+import {useCallback, useState} from "react"
 import {ActivityIndicator, Alert, RefreshControl, ScrollView, View} from "react-native"
 import {apiService} from "@/services/apiService"
 import MyCard from "@/components/myCard";
 import {MatchData} from "@/types/schemas";
 import NoData from "@/components/common/noData";
+import {useFocusEffect} from "expo-router";
 
 export default function OfferGames() {
   const [data, setData] = useState<MatchData[]>([])
 
   const [refreshing, setRefreshing] = useState(false)
   const [loading, setLoading] = useState(true)
-    const [addGameLoading, setAddGameLoading] = useState(false)
+    const [loadingId, setLoadingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadData()
-  }, [])
+
+    useFocusEffect(
+        useCallback(() => {
+            loadData()
+        }, [])
+    );
 
   const loadData = async () => {
     try {
       const data = await apiService.getAvailableList()
       setData(data?.data)
     } catch (error) {
-      Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
+        if (error) {
+            Alert.alert("خطا", error.toString());
+        }
     } finally {
       setLoading(false)
     }
   }
 
     const submitGame = async (id: string) => {
-        setAddGameLoading(true)
+        setLoadingId(id);
         try {
             await apiService.postAvailable(id)
             await loadData()
+            Alert.alert("موفق", "بازی شما با موفقیت تایید شد. برای دیدن یا کنسل کردن آن به صفحه بازی های من بروید")
         } catch (error) {
-            Alert.alert("خطا", "خطا در تایید بازی")
+            if (error) {
+                Alert.alert("خطا", error.toString());
+            }
         } finally {
-            setAddGameLoading(false)
+            setLoadingId(null);
         }
     }
 
@@ -57,7 +66,7 @@ export default function OfferGames() {
               }
           >
             {data.map((item, index) => (
-                <MyCard key={index} data={item} onConfirm={submitGame} loading={addGameLoading} offerPage/>
+                <MyCard key={index} data={item} onConfirm={submitGame} loading={loadingId === item.id} offerPage/>
             ))}
           </ScrollView>  : <NoData />
       )

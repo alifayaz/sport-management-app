@@ -23,10 +23,6 @@ import {LoginFormType, loginSchema} from "@/types/schemas";
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
-interface LoginScreenProps {
-  onLogin: () => void
-}
-
 export default function Login() {
   const {handleSubmit, control} = useForm({
     resolver: zodResolver(loginSchema),
@@ -45,7 +41,9 @@ export default function Login() {
       await AsyncStorage.setItem("authToken", response?.data?.token)
       router.replace("/dashboard");
     } catch (error) {
-      Alert.alert("خطا", "نام کاربری یا رمز عبور اشتباه است")
+      if (error) {
+        Alert.alert("خطا", error.toString());
+      }
     } finally {
       setLoading(false)
     }

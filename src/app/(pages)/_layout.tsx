@@ -56,11 +56,11 @@ export default function PagesLayout() {
             />
 
             <Tabs.Screen
-                name="reports"
+                name="myGames"
                 options={{
-                    title: "گزارشات",
+                    title: "بازی های من",
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="analytics" color={color} size={size} />
+                        <Ionicons name="game-controller-outline" color={color} size={size} />
                     ),
                 }}
             />
@@ -68,7 +68,7 @@ export default function PagesLayout() {
             <Tabs.Screen
                 name="offerGames"
                 options={{
-                    title: "پیشنهادی",
+                    title: "بازی پیشنهادی",
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="sparkles-outline" color={color} size={size} />
                     ),
@@ -76,9 +76,9 @@ export default function PagesLayout() {
             />
 
             <Tabs.Screen
-                name="myGames"
+                name="reports"
                 options={{
-                    title: "بازی های من",
+                    title: "گزارشات",
                     href: null,
                 }}
             />

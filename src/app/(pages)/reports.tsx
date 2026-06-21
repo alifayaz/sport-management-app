@@ -26,7 +26,9 @@ export default function Reports() {
       const data = await apiService.getMyAvailable()
       setData(data?.data)
     } catch (error) {
-      Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
+      if (error) {
+        Alert.alert("خطا", error.toString());
+      }
     } finally {
       setLoading(false)
     }

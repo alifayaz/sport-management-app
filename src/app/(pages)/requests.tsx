@@ -41,7 +41,9 @@ export default function Requests() {
       setStats(statsData)
       setUnpaidMembers(unpaidData)
     } catch (error) {
-      Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
+      if (error) {
+        Alert.alert("خطا", error.toString());
+      }
     } finally {
       setLoading(false)
     }

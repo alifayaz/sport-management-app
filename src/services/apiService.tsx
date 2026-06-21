@@ -27,7 +27,8 @@ class ApiService {
     })
 
     if (!response.ok) {
-      throw new Error(response.statusText)
+      const result = await response.json()
+      throw new Error(result.message)
     }
 
     return response.json()
@@ -43,7 +44,8 @@ class ApiService {
     })
 
     if (!response.ok) {
-      throw new Error(response.statusText)
+      const result = await response.json()
+      throw new Error(result.message)
     }
 
     return response.json()
@@ -56,7 +58,8 @@ class ApiService {
     })
 
     if (!response.ok) {
-      throw new Error("Failed to fetch dashboard stats")
+      const result = await response.json()
+      throw new Error(result.message)
     }
 
     return response.json()
@@ -69,7 +72,8 @@ class ApiService {
     })
 
     if (!response.ok) {
-      throw new Error("Failed to fetch dashboard stats")
+      const result = await response.json()
+      throw new Error(result.message)
     }
 
     return response.json()
@@ -77,14 +81,15 @@ class ApiService {
 
   async postAvailable(id: string) {
     const headers = await this.getAuthHeaders()
-    const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/availabilities/request`, {
+    const response = await fetch(`${API_BASE_URL}/api/${APP_VERSION}/availabilities/accept`, {
       method: "POST",
       headers,
       body: JSON.stringify({availability_id: id})
     })
 
     if (!response.ok) {
-      throw new Error("Failed to fetch dashboard stats")
+      const result = await response.json()
+      throw new Error(result.message)
     }
 
     return response.json()
@@ -97,7 +102,8 @@ class ApiService {
     })
 
     if (!response.ok) {
-      throw new Error("Failed to fetch user info")
+      const result = await response.json()
+      throw new Error(result.message)
     }
 
     return response.json()

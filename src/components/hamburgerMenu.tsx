@@ -49,7 +49,9 @@ export default function HamburgerMenu() {
             const {data} = await apiService.getUserInfo()
             setUserData(data)
         } catch (error) {
-            Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
+            if (error) {
+                Alert.alert("خطا", error.toString());
+            }
         } finally {
         }
     }

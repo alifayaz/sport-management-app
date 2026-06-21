@@ -38,16 +38,16 @@ const getDuration = (start: string, end: string) => {
 
 const StatusBadge = ({status}: { status: MatchStatus }) => {
     const map = {
-        active: {
-            label: "در حال برگزاری",
+        accepted: {
+            label: "پذیرفته شده",
             bg: "bg-green-50",
             text: "text-green-600",
             icon: "checkmark-circle-outline",
         },
         expire: {
             label: "منقضی شده",
-            bg: "bg-red-50",
-            text: "text-red-600",
+            bg: "bg-gray-100",
+            text: "text-gray-400",
             icon: "close-circle-outline",
         },
         waiting: {
@@ -55,6 +55,12 @@ const StatusBadge = ({status}: { status: MatchStatus }) => {
             bg: "bg-yellow-50",
             text: "text-yellow-600",
             icon: "time-outline",
+        },
+        canceled: {
+            label: "کنسل شده",
+            bg: "bg-red-50",
+            text: "text-red-600",
+            icon: "close-circle-outline",
         },
     } as const;
 
@@ -120,17 +126,19 @@ const MyCard: React.FC<Props> = ({data, onConfirm, loading, offerPage}) => {
             </View>
 
             {data.status === "waiting" && offerPage && (
-                loading ? (
-                        <ActivityIndicator color="#fff"/>
-                    ) :
                     <Pressable
                         onPress={() => onConfirm?.(data.id)}
                         className="mt-5 bg-[#1E5A99] rounded-2xl py-3 items-center active:opacity-80 flex-row justify-center"
                     >
-                        <Ionicons name="checkmark-circle-outline" size={18} color="white"/>
-                        <Text className="text-white font-yekan mr-2">
-                            تایید بازی
-                        </Text>
+                        {loading ? (
+                        <ActivityIndicator color="#fff"/>
+                        ) :
+                        <View className='flex flex-row items-center justify-center'>
+                            <Ionicons name="checkmark-circle-outline" size={18} color="white"/>
+                            <Text className="text-white font-yekan mr-2">
+                                تایید بازی
+                            </Text>
+                        </View>}
                     </Pressable>
             )}
 

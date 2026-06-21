@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react"
+import {useState, useCallback} from "react"
+import { useFocusEffect } from 'expo-router';
 import {
   StyleSheet,
   ScrollView,
@@ -29,9 +30,11 @@ export default function Dashboard() {
   const [refreshing, setRefreshing] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadDashboardData()
-  }, [])
+  useFocusEffect(
+      useCallback(() => {
+        loadDashboardData();
+      }, [])
+  );
 
   const loadDashboardData = async () => {
     try {
@@ -39,7 +42,9 @@ export default function Dashboard() {
       setData(data?.data)
       setListData(listData?.data)
     } catch (error) {
-      Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
+      if (error) {
+        Alert.alert("خطا", error.toString());
+      }
     } finally {
       setLoading(false)
     }

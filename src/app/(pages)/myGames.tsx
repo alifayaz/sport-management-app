@@ -1,9 +1,10 @@
-import {useEffect, useState} from "react"
+import {useCallback, useState} from "react"
 import {ActivityIndicator, Alert, Dimensions, RefreshControl, ScrollView, StyleSheet, View} from "react-native"
 import {apiService} from "@/services/apiService"
 import MyCard from "@/components/myCard";
 import {MatchData} from "@/types/schemas";
 import NoData from "@/components/common/noData";
+import {useFocusEffect} from "expo-router";
 
 export default function MyGames() {
   const [data, setData] = useState<MatchData[]>([])
@@ -11,16 +12,20 @@ export default function MyGames() {
   const [refreshing, setRefreshing] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    loadData()
-  }, [])
+    useFocusEffect(
+        useCallback(() => {
+            loadData()
+        }, [])
+    );
 
   const loadData = async () => {
     try {
       const data = await apiService.getMyAvailable()
       setData(data?.data)
     } catch (error) {
-      Alert.alert("خطا", "خطا در بارگذاری اطلاعات")
+        if (error) {
+            Alert.alert("خطا", error.toString());
+        }
     } finally {
       setLoading(false)
     }

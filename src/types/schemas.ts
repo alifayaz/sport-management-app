@@ -41,7 +41,7 @@ export const resetPasswordSchema = z
     path: ['repeatPassword'],
   });
 
-export type MatchStatus = "active" | "expire" | "waiting";
+export type MatchStatus = "accepted" | "expire" | "waiting" | "canceled";
 
 export type MatchData = {
   id: string

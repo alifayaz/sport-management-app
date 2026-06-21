@@ -44,7 +44,9 @@ export default function Register() {
       Alert.alert("موفق", "ثبت نام با موفقیت انجام شد")
       router.push('/login')
     } catch (error) {
-      Alert.alert("خطا", "خطا در اطلاعات وارد شده")
+      if (error) {
+        Alert.alert("خطا", error.toString());
+      }
     } finally {
       setLoading(false)
     }
