@@ -1,25 +1,25 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
 import { useColorScheme } from 'react-native';
-import "../global.css";
+import '../global.css';
 import { Slot } from 'expo-router';
-import {useFonts} from "expo-font";
-import { I18nManager } from "react-native";
+import { useFonts } from 'expo-font';
+import { I18nManager } from 'react-native';
 
 I18nManager.allowRTL(true);
 I18nManager.forceRTL(true);
 
 export default function MainLayout() {
   const colorScheme = useColorScheme();
-    const [fontsLoaded] = useFonts({
-        YekanBakh: require('../../assets/fonts/YekanBakh-Regular.ttf'),
-        YekanBakhBold: require('../../assets/fonts/YekanBakh-Bold.ttf'),
-    });
+  const [fontsLoaded] = useFonts({
+    YekanBakh: require('../../assets/fonts/YekanBakh-Regular.ttf'),
+    YekanBakhBold: require('../../assets/fonts/YekanBakh-Bold.ttf'),
+  });
 
-    if (!fontsLoaded) return null;
+  if (!fontsLoaded) return null;
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Slot  />
+      <Slot />
     </ThemeProvider>
   );
 }
