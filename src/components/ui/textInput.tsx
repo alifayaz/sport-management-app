@@ -39,7 +39,7 @@ export default function CustomTextInput({
   return (
     <View>
       <View
-        className={`border rounded-md flex-row items-center px-2 ${
+        className={`bg-white border rounded-md flex-row items-center px-2 ${
           error ? 'border-red-500' : 'border-gray-300'
         } ${containerClassName}`}
       >
@@ -48,7 +48,8 @@ export default function CustomTextInput({
           keyboardType={getKeyboardType()}
           autoCapitalize={type === 'email' ? 'none' : 'sentences'}
           secureTextEntry={type === 'password' && !showPassword}
-          className={`flex-1 h-12 font-yekan ${inputClassName}`}
+          className={`flex-1 h-12 text-right outline-0 font-yekan ${inputClassName}`}
+          placeholderTextColor="#ccc"
         />
 
         {type === 'password' && (

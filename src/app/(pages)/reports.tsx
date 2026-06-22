@@ -1,13 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  Alert,
-  Text,
-  Dimensions,
-} from 'react-native';
+import { View, ScrollView, RefreshControl, Alert, Text } from 'react-native';
 import { apiService } from '@/services/apiService';
 
 interface Data {
@@ -49,7 +41,11 @@ export default function Reports() {
 
   return (
     <ScrollView
-      style={styles.container}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingHorizontal: 12,
+        paddingBottom: 100, // fallback
+      }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
@@ -60,11 +56,3 @@ export default function Reports() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    width: Dimensions.get('window').width,
-  },
-});

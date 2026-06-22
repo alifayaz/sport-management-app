@@ -1,6 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
-import { LoginFormType, RegisterRequest } from '@/types/schemas';
+import {
+  CreateAvailabilityType,
+  LoginFormType,
+  RegisterRequest,
+} from '@/types/schemas';
 
 const API_BASE_URL = Constants.expoConfig?.extra?.API_URL;
 const APP_VERSION = Constants.expoConfig?.extra?.APP_VERSION;
@@ -135,6 +139,25 @@ class ApiService {
         method: 'POST',
         headers,
         body: JSON.stringify({ availability_id: id }),
+      },
+    );
+
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.message);
+    }
+
+    return response.json();
+  }
+
+  async createGame(body: CreateAvailabilityType) {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(
+      `${API_BASE_URL}/api/${APP_VERSION}/availabilities/create`,
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
       },
     );
 

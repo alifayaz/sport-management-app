@@ -2,8 +2,11 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import HamburgerMenu from '@/components/hamburgerMenu';
 import { useEffect } from 'react';
+import { Pressable, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PagesLayout() {
+  const insets = useSafeAreaInsets();
   useEffect(() => {
     if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       document.documentElement.dir = 'rtl';
@@ -27,8 +30,11 @@ export default function PagesLayout() {
           shadowOpacity: 0.1,
           shadowRadius: 10,
           shadowOffset: { width: 0, height: 5 },
-          // Android shadow
           elevation: 5,
+          height: 80 + insets.bottom,
+        },
+        tabBarItemStyle: {
+          paddingVertical: 6,
         },
         tabBarLabelStyle: {
           fontFamily: 'YekanBakh',
@@ -54,6 +60,44 @@ export default function PagesLayout() {
           title: 'درخواست ها',
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="list" color={color} size={size} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="createGame"
+        options={{
+          title: 'ثبت بازی',
+          tabBarIcon: ({ focused }) => (
+            <Ionicons name="add" size={32} color="#fff" />
+          ),
+          tabBarStyle: {
+            height: 80 + insets.bottom,
+            backgroundColor: '#fff',
+            borderTopColor: '#eee',
+          },
+          tabBarButton: ({ onPress, accessibilityState }) => (
+            <Pressable
+              onPress={onPress}
+              style={{
+                top: -30,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <View
+                style={{
+                  width: 60,
+                  height: 60,
+                  borderRadius: 30,
+                  backgroundColor: '#FF5722',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons name="add" size={32} color="#fff" />
+              </View>
+            </Pressable>
           ),
         }}
       />

@@ -2,10 +2,8 @@ import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Dimensions,
   RefreshControl,
   ScrollView,
-  StyleSheet,
   View,
 } from 'react-native';
 import { apiService } from '@/services/apiService';
@@ -76,7 +74,11 @@ export default function MyGames() {
     </View>
   ) : data?.length ? (
     <ScrollView
-      style={styles.container}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingHorizontal: 12,
+        paddingBottom: 100, // fallback
+      }}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       refreshControl={
@@ -96,13 +98,3 @@ export default function MyGames() {
     <NoData />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    width: Dimensions.get('window').width * 0.95,
-    margin: 'auto',
-    marginBottom: 20,
-  },
-});

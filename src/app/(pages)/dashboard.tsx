@@ -1,12 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
-import {
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  Alert,
-  Dimensions,
-} from 'react-native';
+import { StyleSheet, ScrollView, RefreshControl, Alert } from 'react-native';
 import { apiService } from '@/services/apiService';
 import DashboardCard from '@/components/dashboardCard';
 import { router } from 'expo-router';
@@ -61,7 +55,11 @@ export default function Dashboard() {
 
   return (
     <ScrollView
-      style={styles.container}
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingHorizontal: 12,
+        paddingBottom: 100,
+      }}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
@@ -83,46 +81,3 @@ export default function Dashboard() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    width: Dimensions.get('window').width * 0.95,
-    margin: 'auto',
-  },
-  statCard: {
-    backgroundColor: '#dbeaff',
-    borderRadius: 14,
-    padding: 16,
-    marginBottom: 12,
-    borderRightWidth: 6,
-    borderRightColor: '#1E5A99',
-    boxShadow: '0px 4px 10px rgba(30, 90, 153, 0.12)',
-    elevation: 3,
-    gap: 20,
-  },
-  statContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  statTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1E5A99',
-    display: 'flex',
-    justifyContent: 'center',
-    fontFamily: 'YekanBakh',
-  },
-
-  statValue: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-    fontFamily: 'YekanBakh',
-    display: 'flex',
-    textTransform: 'capitalize',
-    justifyContent: 'center',
-  },
-});

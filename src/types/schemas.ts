@@ -33,7 +33,7 @@ export const registerSchema = z
     path: ['confirmPassword'],
   });
 
-const createAvailabilitySchema = z.object({
+export const createAvailabilitySchema = z.object({
   sport: z.enum([
     'football',
     'futsal',
@@ -42,12 +42,12 @@ const createAvailabilitySchema = z.object({
     'padel',
     'tennis',
   ]),
-  latitude: z.number(),
-  longitude: z.number(),
-  start_time: z.coerce.date(),
+  latitude: z.string(),
+  longitude: z.string(),
+  start_time: z.string(),
   arena_type: z.enum(['outdoor', 'indoor']),
-  arena_name: z.string().nullish(),
-  duration: z.coerce.number().int().positive(),
+  arena_name: z.string().optional(),
+  duration: z.string(),
 });
 export type CreateAvailabilityType = z.infer<typeof createAvailabilitySchema>;
 

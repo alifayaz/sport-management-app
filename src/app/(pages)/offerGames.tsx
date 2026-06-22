@@ -68,6 +68,11 @@ export default function OfferGames() {
     </View>
   ) : data?.length ? (
     <ScrollView
+      contentContainerStyle={{
+        flexGrow: 1,
+        paddingHorizontal: 12,
+        paddingBottom: 100, // fallback
+      }}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
       refreshControl={
