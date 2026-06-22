@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
-import { LoginFormType, RegisterFormType } from '@/types/schemas';
+import { LoginFormType, RegisterRequest } from '@/types/schemas';
 
 const API_BASE_URL = Constants.expoConfig?.extra?.API_URL;
 const APP_VERSION = Constants.expoConfig?.extra?.APP_VERSION;
@@ -37,7 +37,7 @@ class ApiService {
     return response.json();
   }
 
-  async register(body: RegisterFormType) {
+  async register(body: RegisterRequest) {
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/auth/register`,
       {

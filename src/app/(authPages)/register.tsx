@@ -10,7 +10,6 @@ import {
   ScrollView,
   Text,
   Dimensions,
-  TextInput,
   Image,
   Pressable,
   ActivityIndicator,
@@ -20,7 +19,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RegisterFormType, registerSchema } from '@/types/schemas';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import CustomTextInput from '@/components/ui/textInput';
 
 export default function Register() {
   const { handleSubmit, control } = useForm({
@@ -28,18 +27,19 @@ export default function Register() {
     defaultValues: {
       username: '',
       password: '',
+      confirmPassword: '',
       first_name: '',
       last_name: '',
-      mobile: '',
+      phone_number: '',
     },
   });
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (body: RegisterFormType) => {
+    const { confirmPassword, ...payload } = body;
     setLoading(true);
     try {
-      await apiService.register(body);
+      await apiService.register(payload);
       Alert.alert('موفق', 'ثبت نام با موفقیت انجام شد');
       router.push('/login');
     } catch (error) {
@@ -72,13 +72,12 @@ export default function Register() {
             control={control}
             name="first_name"
             render={({ field, fieldState: { error } }) => (
-              <TextInput
-                {...field}
+              <CustomTextInput
                 value={field.value}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 placeholder="نام"
-                className="border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
+                error={error?.message}
               />
             )}
           />
@@ -86,13 +85,12 @@ export default function Register() {
             control={control}
             name="last_name"
             render={({ field, fieldState: { error } }) => (
-              <TextInput
-                {...field}
+              <CustomTextInput
                 value={field.value}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 placeholder="نام خانوادگی"
-                className="border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
+                error={error?.message}
               />
             )}
           />
@@ -100,55 +98,58 @@ export default function Register() {
             control={control}
             name="username"
             render={({ field, fieldState: { error } }) => (
-              <TextInput
-                {...field}
+              <CustomTextInput
                 value={field.value}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
                 placeholder="نام کاربری"
-                className="border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
+                error={error?.message}
               />
             )}
           />
           <Controller
             control={control}
-            name="mobile"
+            name="phone_number"
             render={({ field, fieldState: { error } }) => (
-              <TextInput
-                {...field}
+              <CustomTextInput
                 value={field.value}
                 onChangeText={field.onChange}
+                type="phone"
                 onBlur={field.onBlur}
                 placeholder="شماره موبایل"
-                className="border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
+                error={error?.message}
               />
             )}
           />
-          <View className="w-full border border-gray-300 rounded-md flex-row items-center px-2 gap-2">
-            <Controller
-              control={control}
-              name="password"
-              render={({ field, fieldState: { error } }) => (
-                <TextInput
-                  {...field}
-                  value={field.value}
-                  onChangeText={field.onChange}
-                  onBlur={field.onBlur}
-                  placeholder="رمز عبور"
-                  textContentType="password"
-                  secureTextEntry={!showPassword}
-                  className="flex-1 h-12 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
-                />
-              )}
-            />
-            <Pressable onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                size={24}
-                color="gray"
+
+          <Controller
+            control={control}
+            name="password"
+            render={({ field, fieldState: { error } }) => (
+              <CustomTextInput
+                value={field.value}
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                placeholder="رمز عبور"
+                type="password"
+                error={error?.message}
               />
-            </Pressable>
-          </View>
+            )}
+          />
+          <Controller
+            control={control}
+            name="confirmPassword"
+            render={({ field, fieldState: { error } }) => (
+              <CustomTextInput
+                value={field.value}
+                onChangeText={field.onChange}
+                onBlur={field.onBlur}
+                placeholder="تکرار رمز عبور"
+                type="password"
+                error={error?.message}
+              />
+            )}
+          />
           <Pressable
             style={styles.button}
             onPress={handleSubmit(handleRegister)}

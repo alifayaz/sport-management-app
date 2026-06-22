@@ -3,42 +3,53 @@ import { z } from 'zod';
 
 export type LoginFormType = z.infer<typeof loginSchema>;
 export type RegisterFormType = z.infer<typeof registerSchema>;
+export type RegisterRequest = Omit<RegisterFormType, 'confirmPassword'>;
 
 export const loginSchema = z.object({
-  username: z.string({ error: 'required' }),
-  password: z.string({ error: 'requiredPassword' }).min(5, 'minLength'),
+  username: z.string().trim().min(1, 'نام کاربری الزامی است'),
+  password: z.string().min(1, 'رمز عبور الزامی است'),
 });
 
-export const registerSchema = z.object({
-  username: z.string({ error: 'required' }),
-  password: z.string({ error: 'requiredPassword' }).min(5, 'minLength'),
-  first_name: z.string(),
-  last_name: z.string(),
-  mobile: z.string(),
-});
-
-export const loginWithPasswordSchema = z.object({
-  username: z
-    .string({ error: 'requiredMobile' })
-    .refine((v) => regexList.mobileEmail.test(v), 'notValid'),
-  password: z.string({ error: 'requiredPassword' }).min(6, 'minLength'),
-});
-
-export const forgotPasswordSchema = z.object({
-  username: z
-    .string({ error: 'required' })
-    .refine((v) => regexList.mobileEmail.test(v), 'notValid'),
-});
-
-export const resetPasswordSchema = z
+export const registerSchema = z
   .object({
-    password: z.string({ error: 'notValid' }).min(6, 'notValid'),
-    repeatPassword: z.string({ error: 'notValid' }).optional(),
+    username: z
+      .string()
+      .trim()
+      .min(4, 'نام کاربری حداقل 4 کاراکتر وارد نمایید.'),
+    password: z
+      .string()
+      .regex(
+        regexList.strongPassword,
+        'پسورد شما باید شامل اعداد و کاراکترهای خاص و حداقل 6 کاراکتر باشد.',
+      ),
+    confirmPassword: z.string().min(1, 'تکرار رمز عبور الزامی است'),
+    first_name: z.string().min(1, 'نام الزامی است'),
+    last_name: z.string().min(1, 'نام خانوادگی الزامی است'),
+    gender: z.enum(['male', 'female', 'other']).optional(),
+    phone_number: z.string().min(11, 'شماره موبایل حداقل 11 رقم می باشد.'),
   })
-  .refine((data) => data.password === data.repeatPassword, {
-    message: 'duplicate',
-    path: ['repeatPassword'],
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'تکرار رمز عبور مطابقت ندارد',
+    path: ['confirmPassword'],
   });
+
+const createAvailabilitySchema = z.object({
+  sport: z.enum([
+    'football',
+    'futsal',
+    'volleyball',
+    'badminton',
+    'padel',
+    'tennis',
+  ]),
+  latitude: z.number(),
+  longitude: z.number(),
+  start_time: z.coerce.date(),
+  arena_type: z.enum(['outdoor', 'indoor']),
+  arena_name: z.string().nullish(),
+  duration: z.coerce.number().int().positive(),
+});
+export type CreateAvailabilityType = z.infer<typeof createAvailabilitySchema>;
 
 export type MatchStatus = 'accepted' | 'expire' | 'waiting' | 'canceled';
 

@@ -10,7 +10,6 @@ import {
   ScrollView,
   Text,
   Dimensions,
-  TextInput,
   Image,
   Pressable,
   ActivityIndicator,
@@ -21,7 +20,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginFormType, loginSchema } from '@/types/schemas';
 import { router } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import CustomTextInput from '@/components/ui/textInput';
 
 export default function Login() {
   const { handleSubmit, control } = useForm({
@@ -32,7 +31,6 @@ export default function Login() {
     },
   });
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (body: LoginFormType) => {
     setLoading(true);
@@ -70,39 +68,31 @@ export default function Login() {
             control={control}
             name="username"
             render={({ field, fieldState: { error } }) => (
-              <TextInput
-                {...field}
+              <CustomTextInput
                 value={field.value}
                 onChangeText={field.onChange}
                 onBlur={field.onBlur}
+                type="text"
                 placeholder="نام کاربری"
-                className="border border-gray-300 rounded-md h-12 px-2 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
+                error={error?.message}
               />
             )}
           />
-          <View className="w-full border border-gray-300 rounded-md flex-row items-center px-2 gap-2">
+          <View className="flex flex-col gap-4">
             <Controller
               control={control}
               name="password"
               render={({ field, fieldState: { error } }) => (
-                <TextInput
-                  {...field}
+                <CustomTextInput
                   value={field.value}
                   onChangeText={field.onChange}
                   onBlur={field.onBlur}
                   placeholder="رمز عبور"
-                  secureTextEntry={!showPassword}
-                  className="flex-1 h-12 font-yekan placeholder:text-right placeholder:text-gray-400 outline-0"
+                  type="password"
+                  error={error?.message}
                 />
               )}
             />
-            <Pressable onPress={() => setShowPassword(!showPassword)}>
-              <Ionicons
-                name={showPassword ? 'eye-off-outline' : 'eye-outline'}
-                size={24}
-                color="gray"
-              />
-            </Pressable>
           </View>
 
           <Pressable style={styles.button} onPress={handleSubmit(handleLogin)}>
