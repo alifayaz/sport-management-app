@@ -3,6 +3,7 @@ import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { MatchData, MatchStatus } from '@/types/schemas';
 import { getArenaTypeFa, getSportNameFa } from '@/utils/constant';
+import { format } from 'date-fns-jalali';
 
 const PRIMARY = '#1E5A99';
 
@@ -13,18 +14,6 @@ type Props = {
   onDetail?: (id: string) => void;
   loading?: boolean;
   offerPage?: boolean;
-};
-
-const formatDateTime = (date: string) => {
-  return new Date(date).toLocaleString('fa-IR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  });
 };
 
 const getDuration = (start: string, end: string) => {
@@ -122,10 +111,16 @@ const MyCard: React.FC<Props> = ({
           </Text>
         </View>
 
-        <View className="flex-row items-center">
+        <View className="flex-row items-center gap-2">
           <Feather name="calendar" size={18} color={PRIMARY} />
-          <Text className="text-slate-600 mr-2 font-yekan text-xs">
-            {formatDateTime(data.start_time)} → {formatDateTime(data.end_time)}
+          <Text className="text-slate-600 font-yekan text-xs">
+            {format(data.start_time, 'dd MMMM yyyy')} ساعت:
+            {format(data.start_time, 'HH:mm')}
+          </Text>
+          <Ionicons name="arrow-back" size={15} />
+          <Text className="text-slate-600 font-yekan text-xs">
+            {format(data.end_time, 'dd MMMM yyyy')} ساعت:
+            {format(data.end_time, 'HH:mm')}
           </Text>
         </View>
       </View>
