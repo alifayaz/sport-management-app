@@ -1,11 +1,14 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { MatchData, MatchStatus } from '@/types/schemas';
-import { getArenaTypeFa, getSportNameFa } from '@/utils/constant';
+import {
+  getArenaTypeFa,
+  getDuration,
+  getSportNameFa,
+  PRIMARY,
+} from '@/utils/constant';
 import { format } from 'date-fns-jalali';
-
-const PRIMARY = '#1E5A99';
 
 type Props = {
   data: MatchData;
@@ -16,19 +19,16 @@ type Props = {
   offerPage?: boolean;
 };
 
-const getDuration = (start: string, end: string) => {
-  const diff = new Date(end).getTime() - new Date(start).getTime();
-  const minutes = Math.floor(diff / (1000 * 60));
-  const hours = Math.floor(minutes / 60);
-  const remain = minutes % 60;
-
-  return hours > 0 ? `${hours} ساعت و ${remain} دقیقه` : `${remain} دقیقه`;
-};
-
 const StatusBadge = ({ status }: { status: MatchStatus }) => {
   const map = {
     accepted: {
       label: 'پذیرفته شده',
+      bg: 'bg-green-50',
+      text: 'text-green-600',
+      icon: 'checkmark-circle-outline',
+    },
+    active: {
+      label: 'فعال',
       bg: 'bg-green-50',
       text: 'text-green-600',
       icon: 'checkmark-circle-outline',
@@ -50,6 +50,12 @@ const StatusBadge = ({ status }: { status: MatchStatus }) => {
       bg: 'bg-red-50',
       text: 'text-red-600',
       icon: 'close-circle-outline',
+    },
+    completed: {
+      label: 'تکمیل شده',
+      bg: 'bg-blue-50',
+      text: 'text-blue-600',
+      icon: 'checkmark-circle-outline',
     },
   } as const;
 
@@ -124,8 +130,17 @@ const MyCard: React.FC<Props> = ({
           </Text>
         </View>
       </View>
+      <Pressable
+        onPress={() => onDetail?.(data.id)}
+        className="mt-5 bg-[#1E5A99] rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
+      >
+        <View className="flex flex-row items-center justify-center">
+          <Ionicons name="document-text-outline" size={18} color="white" />
+          <Text className="text-white font-yekan mr-2">جزئیات بازی</Text>
+        </View>
+      </Pressable>
 
-      {data.status === 'waiting' && offerPage && (
+      {/*{data.status === 'waiting' && offerPage && (
         <Pressable
           onPress={() => onConfirm?.(data.id)}
           className="mt-5 bg-[#1E5A99] rounded-2xl py-3 items-center active:opacity-80 flex-row justify-center"
@@ -169,7 +184,7 @@ const MyCard: React.FC<Props> = ({
             </View>
           </Pressable>
         </View>
-      )}
+      )}*/}
     </View>
   );
 };

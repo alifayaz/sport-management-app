@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { useFocusEffect } from 'expo-router';
-import { StyleSheet, ScrollView, RefreshControl, Alert } from 'react-native';
+import { ScrollView, RefreshControl, Alert } from 'react-native';
 import { apiService } from '@/services/apiService';
 import DashboardCard from '@/components/dashboardCard';
 import { router } from 'expo-router';
@@ -19,7 +19,6 @@ interface SportList {
 }
 
 export default function Dashboard() {
-  const [data, setData] = useState<SportList[]>([]);
   const [listData, setListData] = useState<SportList[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -32,11 +31,7 @@ export default function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
-      const [data, listData] = await Promise.all([
-        apiService.getMyAvailable(),
-        apiService.getAvailableList(),
-      ]);
-      setData(data?.data);
+      const listData = await apiService.getAvailableList();
       setListData(listData?.data);
     } catch (error) {
       if (error) {
@@ -66,7 +61,7 @@ export default function Dashboard() {
     >
       <DashboardCard
         title="بازی های من"
-        count={data?.length}
+        count={1}
         icon="game-controller-outline"
         loading={loading}
         onPress={() => router.push('/myGames')}

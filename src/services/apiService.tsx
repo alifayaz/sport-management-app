@@ -61,10 +61,27 @@ class ApiService {
     return response.json();
   }
 
-  async getMyAvailable() {
+  async getMatchActive() {
     const headers = await this.getAuthHeaders();
     const response = await fetch(
-      `${API_BASE_URL}/api/${APP_VERSION}/availabilities/me`,
+      `${API_BASE_URL}/api/${APP_VERSION}/match/active`,
+      {
+        headers,
+      },
+    );
+
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.message);
+    }
+
+    return response.json();
+  }
+
+  async getMatchHistory() {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(
+      `${API_BASE_URL}/api/${APP_VERSION}/match/history`,
       {
         headers,
       },

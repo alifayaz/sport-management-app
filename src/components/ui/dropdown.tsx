@@ -55,7 +55,7 @@ export default function CustomDropdown({
           px-3
           flex-row
           items-center
-          justify-between
+          gap-2
           ${disabled ? 'bg-gray-100' : 'bg-white'}
           ${error ? 'border-red-500' : 'border-gray-300'}
         `}

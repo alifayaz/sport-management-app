@@ -117,7 +117,7 @@ export default function HamburgerMenu() {
 
             <TouchableOpacity
               style={styles.menuItem}
-              onPress={() => navigate('/settings')}
+              onPress={() => navigate('/')}
             >
               <Text style={styles.menuText}>تنظیمات</Text>
             </TouchableOpacity>

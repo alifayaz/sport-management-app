@@ -36,7 +36,7 @@ export default function Requests() {
 
   const loadDashboardData = async () => {
     try {
-      const [statsData] = await Promise.all([apiService.getMyAvailable()]);
+      const [statsData] = await Promise.all([apiService.getMatchActive()]);
       setStats(statsData);
     } catch (error) {
       if (error) {

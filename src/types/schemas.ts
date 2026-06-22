@@ -51,7 +51,13 @@ export const createAvailabilitySchema = z.object({
 });
 export type CreateAvailabilityType = z.infer<typeof createAvailabilitySchema>;
 
-export type MatchStatus = 'accepted' | 'expire' | 'waiting' | 'canceled';
+export type MatchStatus =
+  | 'accepted'
+  | 'expire'
+  | 'waiting'
+  | 'canceled'
+  | 'active'
+  | 'completed';
 
 export type MatchData = {
   id: string;
@@ -61,7 +67,16 @@ export type MatchData = {
   start_time: string;
   end_time: string;
   status: MatchStatus;
-  user: {
+  host: {
+    id: string;
+    age: number;
+    first_name: string;
+    last_name: string;
+    gender: string;
+    rate: string;
+  };
+  guest: {
+    id: string;
     age: number;
     first_name: string;
     last_name: string;

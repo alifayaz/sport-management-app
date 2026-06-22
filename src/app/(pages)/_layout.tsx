@@ -133,6 +133,13 @@ export default function PagesLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="gameDetail"
+        options={{
+          title: '',
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }

@@ -4,16 +4,18 @@ import {
   Alert,
   RefreshControl,
   ScrollView,
+  Text,
   View,
 } from 'react-native';
 import { apiService } from '@/services/apiService';
 import MyCard from '@/components/myCard';
 import { MatchData } from '@/types/schemas';
 import NoData from '@/components/common/noData';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 
 export default function MyGames() {
-  const [data, setData] = useState<MatchData[]>([]);
+  const [data, setData] = useState<MatchData>();
+  const [historyData, setHistoryData] = useState<MatchData[]>([]);
 
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -27,8 +29,12 @@ export default function MyGames() {
 
   const loadData = async () => {
     try {
-      const data = await apiService.getMyAvailable();
+      const [data, historyData] = await Promise.all([
+        apiService.getMatchActive(),
+        apiService.getMatchHistory(),
+      ]);
       setData(data?.data);
+      setHistoryData(historyData?.data);
     } catch (error) {
       if (error) {
         Alert.alert('خطا', error.toString());
@@ -62,6 +68,10 @@ export default function MyGames() {
     ]);
   };
 
+  const onDetail = async (id: string) => {
+    router.push('/gameDetail');
+  };
+
   const onRefresh = async () => {
     setRefreshing(true);
     await loadData();
@@ -72,12 +82,12 @@ export default function MyGames() {
     <View className="flex-1 items-center justify-center">
       <ActivityIndicator size="large" color="#1E5A99" />
     </View>
-  ) : data?.length ? (
+  ) : (
     <ScrollView
       contentContainerStyle={{
         flexGrow: 1,
         paddingHorizontal: 12,
-        paddingBottom: 100, // fallback
+        paddingBottom: 100,
       }}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
@@ -85,16 +95,29 @@ export default function MyGames() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {data.map((item, index) => (
-        <MyCard
-          key={index}
-          data={item}
-          onCancel={cancelGame}
-          loading={loadingId === item.id}
-        />
-      ))}
+      <View>
+        <Text className="text-xl text-primary font-yekanBold mt-4">
+          بازی های من
+        </Text>
+        {data ? (
+          <MyCard data={data} onDetail={onDetail} loading={loading} />
+        ) : (
+          <NoData />
+        )}
+      </View>
+
+      <View>
+        <Text className="text-xl text-primary font-yekanBold my-4">
+          تاریخچه بازی های من
+        </Text>
+        {historyData?.length ? (
+          historyData?.map((item, index) => {
+            return <MyCard data={item} key={index} onDetail={onDetail} />;
+          })
+        ) : (
+          <NoData />
+        )}
+      </View>
     </ScrollView>
-  ) : (
-    <NoData />
   );
 }

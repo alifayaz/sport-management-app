@@ -22,7 +22,7 @@ export default function Reports() {
 
   const loadData = async () => {
     try {
-      const data = await apiService.getMyAvailable();
+      const data = await apiService.getMatchActive();
       setData(data?.data);
     } catch (error) {
       if (error) {
