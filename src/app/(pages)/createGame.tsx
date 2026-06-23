@@ -19,14 +19,15 @@ import {
 } from '@/types/schemas';
 import CustomTextInput from '@/components/ui/textInput';
 import CustomDropdown from '@/components/ui/dropdown';
+import JalaliReservationPicker from '@/components/ui/jalaliDateTimePicker';
 
 export default function CreateGame() {
   const { handleSubmit, control, reset } = useForm({
     resolver: zodResolver(createAvailabilitySchema),
     defaultValues: {
       sport: 'football',
-      latitude: '0',
-      longitude: '0',
+      latitude: 0,
+      longitude: 0,
       start_time: '',
       arena_type: 'outdoor',
       arena_name: '',
@@ -82,102 +83,120 @@ export default function CreateGame() {
               />
             )}
           />
-          <Controller
-            control={control}
-            name="arena_type"
-            render={({ field, fieldState: { error } }) => (
-              <CustomDropdown
-                label="نوع ورزشگاه"
-                required
-                value={field.value}
-                onChange={field.onChange}
-                error={error?.message}
-                data={[
-                  {
-                    label: 'فضای باز',
-                    value: 'outdoor',
-                  },
-                  {
-                    label: 'سرپوشیده',
-                    value: 'indoor',
-                  },
-                ]}
+          <View className="flex-row flex-wrap -mx-2">
+            <View className="w-1/2 px-2 mb-4">
+              <Controller
+                control={control}
+                name="arena_type"
+                render={({ field, fieldState: { error } }) => (
+                  <CustomDropdown
+                    label="نوع ورزشگاه"
+                    required
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={error?.message}
+                    data={[
+                      {
+                        label: 'فضای باز',
+                        value: 'outdoor',
+                      },
+                      {
+                        label: 'سرپوشیده',
+                        value: 'indoor',
+                      },
+                    ]}
+                  />
+                )}
               />
-            )}
-          />
-          <Controller
-            control={control}
-            name="sport"
-            render={({ field, fieldState: { error } }) => (
-              <CustomDropdown
-                label="ورزش"
-                required
-                value={field.value}
-                onChange={field.onChange}
-                error={error?.message}
-                data={[
-                  {
-                    label: 'فوتبال',
-                    value: 'football',
-                  },
-                  {
-                    label: 'فوتسال',
-                    value: 'futsal',
-                  },
-                  {
-                    label: 'والیبال',
-                    value: 'volleyball',
-                  },
-                  {
-                    label: 'بدمینتون',
-                    value: 'badminton',
-                  },
-                  {
-                    label: 'پدل',
-                    value: 'padel',
-                  },
-                  {
-                    label: 'تنیس',
-                    value: 'tennis',
-                  },
-                ]}
+            </View>
+            <View className="w-1/2 px-2 mb-4">
+              <Controller
+                control={control}
+                name="sport"
+                render={({ field, fieldState: { error } }) => (
+                  <CustomDropdown
+                    label="ورزش"
+                    required
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={error?.message}
+                    data={[
+                      {
+                        label: 'فوتبال',
+                        value: 'football',
+                      },
+                      {
+                        label: 'فوتسال',
+                        value: 'futsal',
+                      },
+                      {
+                        label: 'والیبال',
+                        value: 'volleyball',
+                      },
+                      {
+                        label: 'بدمینتون',
+                        value: 'badminton',
+                      },
+                      {
+                        label: 'پدل',
+                        value: 'padel',
+                      },
+                      {
+                        label: 'تنیس',
+                        value: 'tennis',
+                      },
+                    ]}
+                  />
+                )}
               />
-            )}
-          />
-          <Controller
-            control={control}
-            name="start_time"
-            render={({ field, fieldState: { error } }) => (
-              <CustomTextInput
-                value={field.value}
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-                placeholder="تاریخ شروع"
-                error={error?.message}
+            </View>
+          </View>
+          <View className="flex-row flex-wrap -mx-2">
+            <View className="w-1/2 px-2 mb-4">
+              <Controller
+                control={control}
+                name="start_time"
+                render={({ field, fieldState: { error } }) => (
+                  <JalaliReservationPicker
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(date) => field.onChange(date.toISOString())}
+                  />
+                )}
               />
-            )}
-          />
-          <Controller
-            control={control}
-            name="duration"
-            render={({ field, fieldState: { error } }) => (
-              <CustomTextInput
-                value={field.value}
-                onChangeText={field.onChange}
-                type="number"
-                onBlur={field.onBlur}
-                placeholder="مدت زمان"
-                error={error?.message}
+            </View>
+
+            <View className="w-1/2 px-2 mb-4">
+              <Controller
+                control={control}
+                name="duration"
+                render={({ field, fieldState: { error } }) => (
+                  <CustomDropdown
+                    label="مدت زمان"
+                    required
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={error?.message}
+                    data={[
+                      { label: 'یک ساعت', value: '60' },
+                      { label: 'یک ساعت و نیم', value: '90' },
+                      { label: 'دو ساعت', value: '120' },
+                      { label: 'دو ساعت و نیم', value: '150' },
+                      { label: 'سه ساعت', value: '180' },
+                    ]}
+                  />
+                )}
               />
-            )}
-          />
+            </View>
+          </View>
           <Controller
             control={control}
             name="latitude"
             render={({ field, fieldState: { error } }) => (
               <CustomTextInput
-                value={field.value}
-                onChangeText={field.onChange}
+                value={field.value.toString()}
+                onChangeText={(value) => {
+                  field.onChange(parseFloat(value));
+                }}
                 type="number"
                 onBlur={field.onBlur}
                 placeholder="latitude"
@@ -190,8 +209,10 @@ export default function CreateGame() {
             name="longitude"
             render={({ field, fieldState: { error } }) => (
               <CustomTextInput
-                value={field.value}
-                onChangeText={field.onChange}
+                value={field.value.toString()}
+                onChangeText={(value) => {
+                  field.onChange(parseFloat(value));
+                }}
                 type="number"
                 onBlur={field.onBlur}
                 placeholder="longitude"
