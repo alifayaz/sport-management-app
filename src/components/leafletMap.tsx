@@ -1,14 +1,24 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { Pressable, View, Platform } from 'react-native';
+import { Platform, Pressable, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as Location from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
 
 type Props = {
+  latitude?: number;
+  longitude?: number;
+  editable?: boolean;
+  showCurrentLocationButton?: boolean;
   onLocationChange?: (lat: number, lng: number) => void;
 };
 
-export default function LeafletMap({ onLocationChange }: Props) {
+export default function LeafletMap({
+  latitude,
+  longitude,
+  editable = true,
+  showCurrentLocationButton = true,
+  onLocationChange,
+}: Props) {
   const webRef = useRef<WebView>(null);
 
   const updateCurrentLocation = async () => {
@@ -20,22 +30,55 @@ export default function LeafletMap({ onLocationChange }: Props) {
       accuracy: Location.Accuracy.High,
     });
 
-    const { latitude, longitude } = loc.coords;
+    const lat = loc.coords.latitude;
+    const lng = loc.coords.longitude;
 
-    onLocationChange?.(latitude, longitude);
+    onLocationChange?.(lat, lng);
 
     webRef.current?.postMessage(
       JSON.stringify({
         type: 'setLocation',
-        latitude,
-        longitude,
+        latitude: lat,
+        longitude: lng,
       }),
     );
   };
 
   useEffect(() => {
-    updateCurrentLocation();
+    if (
+      latitude !== undefined &&
+      longitude !== undefined &&
+      latitude !== 0 &&
+      longitude !== 0
+    ) {
+      webRef.current?.postMessage(
+        JSON.stringify({
+          type: 'setLocation',
+          latitude,
+          longitude,
+        }),
+      );
+    } else {
+      updateCurrentLocation();
+    }
   }, []);
+
+  useEffect(() => {
+    if (
+      latitude !== undefined &&
+      longitude !== undefined &&
+      latitude !== 0 &&
+      longitude !== 0
+    ) {
+      webRef.current?.postMessage(
+        JSON.stringify({
+          type: 'setLocation',
+          latitude,
+          longitude,
+        }),
+      );
+    }
+  }, [latitude, longitude]);
 
   const html = useMemo(
     () => `
@@ -77,7 +120,11 @@ width:100%;
 
 <script>
 
-const map=L.map("map").setView([35.6892,51.389],5);
+const editable = ${editable};
+
+const map = L.map("map",{
+    zoomControl: editable
+}).setView([35.6892,51.389],5);
 
 L.tileLayer(
 "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
@@ -86,10 +133,10 @@ maxZoom:19
 }
 ).addTo(map);
 
-let marker=L.marker(
+const marker = L.marker(
 [35.6892,51.389],
 {
-draggable:true
+draggable:editable
 }
 ).addTo(map);
 
@@ -108,17 +155,31 @@ function update(lat,lng){
 
 marker.setLatLng([lat,lng]);
 
-map.setView([lat,lng],16);
+map.flyTo(
+[lat,lng],
+16,
+{
+animate:true,
+duration:0.5
+}
+);
 
+if(editable){
 send(lat,lng);
+}
 
 }
+
+if(editable){
 
 marker.on("dragend",function(e){
 
 const p=e.target.getLatLng();
 
-send(p.lat,p.lng);
+send(
+p.lat,
+p.lng
+);
 
 });
 
@@ -126,13 +187,27 @@ map.on("click",function(e){
 
 marker.setLatLng(e.latlng);
 
-send(e.latlng.lat,e.latlng.lng);
+send(
+e.latlng.lat,
+e.latlng.lng
+);
 
 });
 
+}else{
+
+map.dragging.disable();
+map.touchZoom.disable();
+map.doubleClickZoom.disable();
+map.scrollWheelZoom.disable();
+map.boxZoom.disable();
+map.keyboard.disable();
+
+}
+
 function receive(event){
 
-const data=JSON.parse(event.data);
+const data = JSON.parse(event.data);
 
 if(data.type==="setLocation"){
 
@@ -155,7 +230,7 @@ window.addEventListener("message",receive);
 
 </html>
 `,
-    [],
+    [editable],
   );
 
   if (Platform.OS === 'web') {
@@ -167,7 +242,7 @@ window.addEventListener("message",receive);
           alignItems: 'center',
         }}
       >
-        Map is available only on Android and iOS.
+        <Text>Map is available only on Android and iOS.</Text>
       </View>
     );
   }
@@ -192,23 +267,26 @@ window.addEventListener("message",receive);
           onLocationChange?.(data.latitude, data.longitude);
         }}
       />
-      <Pressable
-        onPress={updateCurrentLocation}
-        style={{
-          position: 'absolute',
-          bottom: 16,
-          right: 16,
-          width: 50,
-          height: 50,
-          borderRadius: 25,
-          backgroundColor: '#fff',
-          justifyContent: 'center',
-          alignItems: 'center',
-          elevation: 4,
-        }}
-      >
-        <MaterialIcons name="my-location" size={26} color="#208AEF" />
-      </Pressable>
+
+      {showCurrentLocationButton && (
+        <Pressable
+          onPress={updateCurrentLocation}
+          style={{
+            position: 'absolute',
+            bottom: 16,
+            right: 16,
+            width: 50,
+            height: 50,
+            borderRadius: 25,
+            backgroundColor: '#fff',
+            justifyContent: 'center',
+            alignItems: 'center',
+            elevation: 4,
+          }}
+        >
+          <MaterialIcons name="my-location" size={26} color="#208AEF" />
+        </Pressable>
+      )}
     </View>
   );
 }
