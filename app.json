@@ -44,6 +44,12 @@
           }
         }
       ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "برای انتخاب موقعیت خود، برنامه به دسترسی موقعیت مکانی نیاز دارد."
+        }
+      ],
       "expo-image",
       "expo-font"
     ],

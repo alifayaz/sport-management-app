@@ -20,9 +20,10 @@ import {
 import CustomTextInput from '@/components/ui/textInput';
 import CustomDropdown from '@/components/ui/dropdown';
 import JalaliReservationPicker from '@/components/ui/jalaliDateTimePicker';
+import LeafletMap from '@/components/leafletMap';
 
 export default function CreateGame() {
-  const { handleSubmit, control, reset } = useForm({
+  const { handleSubmit, control, resetField, watch, setValue } = useForm({
     resolver: zodResolver(createAvailabilitySchema),
     defaultValues: {
       sport: 'football',
@@ -41,7 +42,11 @@ export default function CreateGame() {
     try {
       await apiService.createGame(body);
       Alert.alert('موفق', 'ثبت بازی با موفقیت انجام شد');
-      reset();
+      resetField('sport');
+      resetField('start_time');
+      resetField('arena_type');
+      resetField('arena_name');
+      resetField('duration');
     } catch (error) {
       if (error) {
         Alert.alert('خطا', error.toString());
@@ -56,182 +61,159 @@ export default function CreateGame() {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 12,
-          paddingBottom: 100, // fallback
-        }}
-        keyboardShouldPersistTaps="handled"
-      >
-        <View className="flex gap-4">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-xl text-primary font-yekanBold mt-4">
-              فرم ثبت درخواست بازی
-            </Text>
-          </View>
-          <Controller
-            control={control}
-            name="arena_name"
-            render={({ field, fieldState: { error } }) => (
-              <CustomTextInput
-                value={field.value}
-                onChangeText={field.onChange}
-                onBlur={field.onBlur}
-                placeholder="نام مکان برگزاری"
-                error={error?.message}
-              />
-            )}
-          />
-          <View className="flex-row flex-wrap -mx-2">
-            <View className="w-1/2 px-2 mb-4">
-              <Controller
-                control={control}
-                name="arena_type"
-                render={({ field, fieldState: { error } }) => (
-                  <CustomDropdown
-                    label="نوع ورزشگاه"
-                    required
-                    value={field.value}
-                    onChange={field.onChange}
-                    error={error?.message}
-                    data={[
-                      {
-                        label: 'فضای باز',
-                        value: 'outdoor',
-                      },
-                      {
-                        label: 'سرپوشیده',
-                        value: 'indoor',
-                      },
-                    ]}
-                  />
-                )}
-              />
-            </View>
-            <View className="w-1/2 px-2 mb-4">
-              <Controller
-                control={control}
-                name="sport"
-                render={({ field, fieldState: { error } }) => (
-                  <CustomDropdown
-                    label="ورزش"
-                    required
-                    value={field.value}
-                    onChange={field.onChange}
-                    error={error?.message}
-                    data={[
-                      {
-                        label: 'فوتبال',
-                        value: 'football',
-                      },
-                      {
-                        label: 'فوتسال',
-                        value: 'futsal',
-                      },
-                      {
-                        label: 'والیبال',
-                        value: 'volleyball',
-                      },
-                      {
-                        label: 'بدمینتون',
-                        value: 'badminton',
-                      },
-                      {
-                        label: 'پدل',
-                        value: 'padel',
-                      },
-                      {
-                        label: 'تنیس',
-                        value: 'tennis',
-                      },
-                    ]}
-                  />
-                )}
-              />
-            </View>
-          </View>
-          <View className="flex-row flex-wrap -mx-2">
-            <View className="w-1/2 px-2 mb-4">
-              <Controller
-                control={control}
-                name="start_time"
-                render={({ field, fieldState: { error } }) => (
-                  <JalaliReservationPicker
-                    value={field.value ? new Date(field.value) : undefined}
-                    onChange={(date) => field.onChange(date.toISOString())}
-                  />
-                )}
-              />
-            </View>
-
-            <View className="w-1/2 px-2 mb-4">
-              <Controller
-                control={control}
-                name="duration"
-                render={({ field, fieldState: { error } }) => (
-                  <CustomDropdown
-                    label="مدت زمان"
-                    required
-                    value={field.value}
-                    onChange={field.onChange}
-                    error={error?.message}
-                    data={[
-                      { label: 'یک ساعت', value: '60' },
-                      { label: 'یک ساعت و نیم', value: '90' },
-                      { label: 'دو ساعت', value: '120' },
-                      { label: 'دو ساعت و نیم', value: '150' },
-                      { label: 'سه ساعت', value: '180' },
-                    ]}
-                  />
-                )}
-              />
-            </View>
-          </View>
-          <Controller
-            control={control}
-            name="latitude"
-            render={({ field, fieldState: { error } }) => (
-              <CustomTextInput
-                value={field.value.toString()}
-                onChangeText={(value) => {
-                  field.onChange(parseFloat(value));
-                }}
-                type="number"
-                onBlur={field.onBlur}
-                placeholder="latitude"
-                error={error?.message}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="longitude"
-            render={({ field, fieldState: { error } }) => (
-              <CustomTextInput
-                value={field.value.toString()}
-                onChangeText={(value) => {
-                  field.onChange(parseFloat(value));
-                }}
-                type="number"
-                onBlur={field.onBlur}
-                placeholder="longitude"
-                error={error?.message}
-              />
-            )}
-          />
-          <Pressable
-            style={styles.button}
-            onPress={handleSubmit(handleRegisterGame)}
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>ثبت درخواست بازی</Text>
-            )}
-          </Pressable>
+      <View className="flex gap-4 px-4 pb-24">
+        <View className="flex-row items-center justify-between">
+          <Text className="text-xl text-primary font-yekanBold mt-4">
+            فرم ثبت درخواست بازی
+          </Text>
         </View>
-      </ScrollView>
+        <Controller
+          control={control}
+          name="arena_name"
+          render={({ field, fieldState: { error } }) => (
+            <CustomTextInput
+              value={field.value}
+              onChangeText={field.onChange}
+              onBlur={field.onBlur}
+              placeholder="نام مکان برگزاری"
+              error={error?.message}
+            />
+          )}
+        />
+        <View className="flex-row flex-wrap -mx-2">
+          <View className="w-1/2 px-2 mb-4">
+            <Controller
+              control={control}
+              name="arena_type"
+              render={({ field, fieldState: { error } }) => (
+                <CustomDropdown
+                  label="نوع ورزشگاه"
+                  required
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                  data={[
+                    {
+                      label: 'فضای باز',
+                      value: 'outdoor',
+                    },
+                    {
+                      label: 'سرپوشیده',
+                      value: 'indoor',
+                    },
+                  ]}
+                />
+              )}
+            />
+          </View>
+          <View className="w-1/2 px-2 mb-4">
+            <Controller
+              control={control}
+              name="sport"
+              render={({ field, fieldState: { error } }) => (
+                <CustomDropdown
+                  label="ورزش"
+                  required
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                  data={[
+                    {
+                      label: 'فوتبال',
+                      value: 'football',
+                    },
+                    {
+                      label: 'فوتسال',
+                      value: 'futsal',
+                    },
+                    {
+                      label: 'والیبال',
+                      value: 'volleyball',
+                    },
+                    {
+                      label: 'بدمینتون',
+                      value: 'badminton',
+                    },
+                    {
+                      label: 'پدل',
+                      value: 'padel',
+                    },
+                    {
+                      label: 'تنیس',
+                      value: 'tennis',
+                    },
+                  ]}
+                />
+              )}
+            />
+          </View>
+        </View>
+        <View className="flex-row flex-wrap -mx-2">
+          <View className="w-1/2 px-2">
+            <Controller
+              control={control}
+              name="start_time"
+              render={({ field, fieldState: { error } }) => (
+                <JalaliReservationPicker
+                  value={field.value ? new Date(field.value) : undefined}
+                  onChange={(date) => field.onChange(date.toISOString())}
+                />
+              )}
+            />
+          </View>
+
+          <View className="w-1/2 px-2 mb-4">
+            <Controller
+              control={control}
+              name="duration"
+              render={({ field, fieldState: { error } }) => (
+                <CustomDropdown
+                  label="مدت زمان"
+                  required
+                  value={field.value}
+                  onChange={field.onChange}
+                  error={error?.message}
+                  data={[
+                    { label: 'یک ساعت', value: '60' },
+                    { label: 'یک ساعت و نیم', value: '90' },
+                    { label: 'دو ساعت', value: '120' },
+                    { label: 'دو ساعت و نیم', value: '150' },
+                    { label: 'سه ساعت', value: '180' },
+                  ]}
+                />
+              )}
+            />
+          </View>
+        </View>
+        <View>
+          <Text>
+            موقعیت مکانی خود را میتوانید با ضربه زدن روی نقشه تغییر دهید.
+          </Text>
+        </View>
+        <LeafletMap
+          onLocationChange={(lat, lng) => {
+            setValue('latitude', lat, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+
+            setValue('longitude', lng, {
+              shouldDirty: true,
+              shouldValidate: true,
+            });
+          }}
+        />
+        <Pressable
+          style={styles.button}
+          onPress={handleSubmit(handleRegisterGame)}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.buttonText}>ثبت درخواست بازی</Text>
+          )}
+        </Pressable>
+      </View>
     </KeyboardAvoidingView>
   );
 }
