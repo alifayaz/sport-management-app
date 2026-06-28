@@ -134,7 +134,7 @@ export default function PagesLayout() {
         }}
       />
       <Tabs.Screen
-        name="gameDetail"
+        name="gameDetail/[id]"
         options={{
           title: '',
           href: null,

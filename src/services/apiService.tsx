@@ -5,6 +5,7 @@ import {
   LoginFormType,
   RegisterRequest,
 } from '@/types/schemas';
+import { router } from 'expo-router';
 
 const API_BASE_URL = Constants.expoConfig?.extra?.API_URL;
 const APP_VERSION = Constants.expoConfig?.extra?.APP_VERSION;
@@ -16,6 +17,13 @@ class ApiService {
       'Content-Type': 'application/json',
       Authorization: token ? `Bearer ${token}` : '',
     };
+  }
+
+  private async getAuth(status: number) {
+    if (status === 401) {
+      await AsyncStorage.removeItem('authToken');
+      router.push('/');
+    }
   }
 
   async login(body: LoginFormType) {
@@ -72,6 +80,27 @@ class ApiService {
 
     if (!response.ok) {
       const result = await response.json();
+      await this.getAuth(response.status);
+      throw new Error(result.message);
+    }
+
+    return response.json();
+  }
+
+  async getMatchDetail(id: string) {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(
+      `${API_BASE_URL}/api/${APP_VERSION}/match/details`,
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ match_id: id }),
+      },
+    );
+
+    if (!response.ok) {
+      const result = await response.json();
+      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 
@@ -89,6 +118,7 @@ class ApiService {
 
     if (!response.ok) {
       const result = await response.json();
+      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 
@@ -125,6 +155,7 @@ class ApiService {
 
     if (!response.ok) {
       const result = await response.json();
+      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 
@@ -142,6 +173,7 @@ class ApiService {
 
     if (!response.ok) {
       const result = await response.json();
+      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 
@@ -151,16 +183,17 @@ class ApiService {
   async postCancelGame(id: string) {
     const headers = await this.getAuthHeaders();
     const response = await fetch(
-      `${API_BASE_URL}/api/${APP_VERSION}/availabilities/cancel`,
+      `${API_BASE_URL}/api/${APP_VERSION}/match/cancel`,
       {
-        method: 'POST',
+        method: 'PATCH',
         headers,
-        body: JSON.stringify({ availability_id: id }),
+        body: JSON.stringify({ match_id: id }),
       },
     );
 
     if (!response.ok) {
       const result = await response.json();
+      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 
@@ -180,6 +213,7 @@ class ApiService {
 
     if (!response.ok) {
       const result = await response.json();
+      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 

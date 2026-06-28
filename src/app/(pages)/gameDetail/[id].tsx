@@ -1,8 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, Alert, ScrollView, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import { apiService } from '@/services/apiService';
 import { MatchData, MatchStatus } from '@/types/schemas';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import {
   getArenaTypeFa,
   getDuration,
@@ -11,10 +18,13 @@ import {
 } from '@/utils/constant';
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { format } from 'date-fns-jalali';
+import LeafletMap from '@/components/leafletMap';
 
-export default function GameDetail() {
+export default function Id() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<MatchData>();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const [cancelLoading, setCancelLoading] = useState(false);
 
   const duration = getDuration(
     data ? data?.start_time : '',
@@ -78,12 +88,12 @@ export default function GameDetail() {
   useFocusEffect(
     useCallback(() => {
       loadData();
-    }, []),
+    }, [id]),
   );
 
   const loadData = async () => {
     try {
-      const data = await apiService.getMatchActive();
+      const data = await apiService.getMatchDetail(id);
       setData(data?.data);
     } catch (error) {
       if (error) {
@@ -92,6 +102,31 @@ export default function GameDetail() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const cancelGame = async (id: string) => {
+    Alert.alert('خروج', 'آیا مطمئن هستید که می‌خواهید بازی را لغو کنید؟', [
+      { text: 'خیر', style: 'cancel' },
+      {
+        text: 'بله',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            setCancelLoading(true);
+            await apiService.postCancelGame(id);
+            await loadData();
+            Alert.alert('موفق', 'بازی شما لغو شد.');
+            router.push('/myGames');
+          } catch (error) {
+            if (error) {
+              Alert.alert('خطا', error.toString());
+            }
+          } finally {
+            setCancelLoading(false);
+          }
+        },
+      },
+    ]);
   };
 
   return loading ? (
@@ -109,9 +144,22 @@ export default function GameDetail() {
       showsHorizontalScrollIndicator={false}
     >
       <View>
-        <Text className="text-xl text-primary font-yekanBold my-4">
-          جزئیات بازی
-        </Text>
+        <View className="flex flex-row justify-between items-center">
+          <Text className="text-xl text-primary font-yekanBold my-4">
+            جزئیات بازی
+          </Text>
+          <Pressable
+            onPress={() => {
+              router.back();
+            }}
+            className="items-center flex-row justify-center mt-4"
+          >
+            <View className="flex flex-row items-center justify-center">
+              <Text className="font-yekan mr-2">بازگشت</Text>
+              <Ionicons name="arrow-back" size={18} />
+            </View>
+          </Pressable>
+        </View>
       </View>
       {data && (
         <View className="bg-white mt-4">
@@ -166,6 +214,32 @@ export default function GameDetail() {
               </Text>
             </View>
           </View>
+          <LeafletMap
+            latitude={parseFloat(data.latitude)}
+            longitude={parseFloat(data.longitude)}
+            editable={false}
+            showCurrentLocationButton={false}
+          />
+          {data?.status === 'accepted' ||
+            (data?.status === 'active' && (
+              <Pressable
+                onPress={() => cancelGame?.(data.id)}
+                className="mt-5 bg-red-400 rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
+              >
+                {cancelLoading ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <View className="flex flex-row items-center justify-center">
+                    <Ionicons
+                      name="close-circle-outline"
+                      size={18}
+                      color="white"
+                    />
+                    <Text className="text-white font-yekan mr-2">لغو بازی</Text>
+                  </View>
+                )}
+              </Pressable>
+            ))}
         </View>
       )}
     </ScrollView>

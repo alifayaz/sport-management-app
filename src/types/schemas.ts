@@ -67,6 +67,8 @@ export type MatchData = {
   start_time: string;
   end_time: string;
   status: MatchStatus;
+  longitude: string;
+  latitude: string;
   host: {
     id: string;
     age: number;

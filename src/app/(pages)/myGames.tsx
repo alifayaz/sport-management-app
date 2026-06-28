@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
+  Pressable,
   RefreshControl,
   ScrollView,
   Text,
@@ -12,6 +13,7 @@ import MyCard from '@/components/myCard';
 import { MatchData } from '@/types/schemas';
 import NoData from '@/components/common/noData';
 import { router, useFocusEffect } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function MyGames() {
   const [data, setData] = useState<MatchData>();
@@ -19,7 +21,6 @@ export default function MyGames() {
 
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [loadingId, setLoadingId] = useState<string | null>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -29,47 +30,34 @@ export default function MyGames() {
 
   const loadData = async () => {
     try {
-      const [data, historyData] = await Promise.all([
+      const [data, historyData] = await Promise.allSettled([
         apiService.getMatchActive(),
         apiService.getMatchHistory(),
       ]);
-      setData(data?.data);
-      setHistoryData(historyData?.data);
-    } catch (error) {
-      if (error) {
-        Alert.alert('خطا', error.toString());
+      if (data.status === 'fulfilled') {
+        setData(data.value.data);
+      }
+
+      if (historyData.status === 'fulfilled') {
+        setHistoryData(historyData.value.data);
+      }
+      if (data.status === 'rejected') {
+        Alert.alert('خطا', data.reason);
+      }
+
+      if (historyData.status === 'rejected') {
+        Alert.alert('خطا', historyData.reason);
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const cancelGame = async (id: string) => {
-    Alert.alert('خروج', 'آیا مطمئن هستید که می‌خواهید بازی را لغو کنید؟', [
-      { text: 'خیر', style: 'cancel' },
-      {
-        text: 'بله',
-        style: 'destructive',
-        onPress: async () => {
-          setLoadingId(id);
-          try {
-            await apiService.postCancelGame(id);
-            await loadData();
-            Alert.alert('موفق', 'بازی شما لغو شد.');
-          } catch (error) {
-            if (error) {
-              Alert.alert('خطا', error.toString());
-            }
-          } finally {
-            setLoadingId(null);
-          }
-        },
-      },
-    ]);
-  };
-
   const onDetail = async (id: string) => {
-    router.push('/gameDetail');
+    router.push({
+      pathname: '/gameDetail/[id]',
+      params: { id },
+    });
   };
 
   const onRefresh = async () => {
@@ -96,9 +84,24 @@ export default function MyGames() {
       }
     >
       <View>
-        <Text className="text-xl text-primary font-yekanBold mt-4">
-          بازی های من
-        </Text>
+        <View className="flex flex-row justify-between items-center">
+          <Text className="text-xl text-primary font-yekanBold mt-4">
+            بازی های من
+          </Text>
+          <Pressable
+            onPress={() => {
+              if (router.canGoBack()) {
+                router.back();
+              }
+            }}
+            className="items-center flex-row justify-center mt-4"
+          >
+            <View className="flex flex-row items-center justify-center">
+              <Text className="font-yekan mr-2">بازگشت</Text>
+              <Ionicons name="arrow-back" size={18} />
+            </View>
+          </Pressable>
+        </View>
         {data ? (
           <MyCard data={data} onDetail={onDetail} loading={loading} />
         ) : (

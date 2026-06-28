@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { MatchData, MatchStatus } from '@/types/schemas';
 import {
@@ -13,7 +13,6 @@ import { format } from 'date-fns-jalali';
 type Props = {
   data: MatchData;
   onConfirm?: (id: string) => void;
-  onCancel?: (id: string) => void;
   onDetail?: (id: string) => void;
   loading?: boolean;
   offerPage?: boolean;
@@ -74,7 +73,6 @@ const StatusBadge = ({ status }: { status: MatchStatus }) => {
 const MyCard: React.FC<Props> = ({
   data,
   onConfirm,
-  onCancel,
   onDetail,
   loading,
   offerPage,
@@ -86,7 +84,7 @@ const MyCard: React.FC<Props> = ({
       {/* HEADER */}
       <View className="flex-row items-center justify-between">
         <View>
-          <Text className="text-xl text-[#1E5A99] font-yekanBold">
+          <Text className="text-2xl text-[#1E5A99] font-yekanBold">
             {getSportNameFa(data.sport)}
           </Text>
 
@@ -130,17 +128,19 @@ const MyCard: React.FC<Props> = ({
           </Text>
         </View>
       </View>
-      <Pressable
-        onPress={() => onDetail?.(data.id)}
-        className="mt-5 bg-[#1E5A99] rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
-      >
-        <View className="flex flex-row items-center justify-center">
-          <Ionicons name="document-text-outline" size={18} color="white" />
-          <Text className="text-white font-yekan mr-2">جزئیات بازی</Text>
-        </View>
-      </Pressable>
+      {data.status !== 'waiting' && !offerPage && (
+        <Pressable
+          onPress={() => onDetail?.(data.id)}
+          className="mt-5 bg-[#1E5A99] rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
+        >
+          <View className="flex flex-row items-center justify-center">
+            <Ionicons name="document-text-outline" size={18} color="white" />
+            <Text className="text-white font-yekan mr-2">جزئیات بازی</Text>
+          </View>
+        </Pressable>
+      )}
 
-      {/*{data.status === 'waiting' && offerPage && (
+      {data.status === 'waiting' && offerPage && (
         <Pressable
           onPress={() => onConfirm?.(data.id)}
           className="mt-5 bg-[#1E5A99] rounded-2xl py-3 items-center active:opacity-80 flex-row justify-center"
@@ -149,42 +149,12 @@ const MyCard: React.FC<Props> = ({
             <ActivityIndicator color="#fff" />
           ) : (
             <View className="flex flex-row items-center justify-center">
-              <Ionicons
-                name="checkmark-circle-outline"
-                size={18}
-                color="white"
-              />
-              <Text className="text-white font-yekan mr-2">تایید بازی</Text>
+              <Ionicons name="add" size={18} color="white" />
+              <Text className="text-white font-yekan mr-2">پیوستن به بازی</Text>
             </View>
           )}
         </Pressable>
       )}
-      {data.status === 'accepted' && (
-        <View className="flex flex-row justify-between items-center">
-          <Pressable
-            onPress={() => onCancel?.(data.id)}
-            className="w-1/3 mt-5 bg-red-400 rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
-          >
-            {loading ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <View className="flex flex-row items-center justify-center">
-                <Ionicons name="close-circle-outline" size={18} color="white" />
-                <Text className="text-white font-yekan mr-2">لغو بازی</Text>
-              </View>
-            )}
-          </Pressable>
-          <Pressable
-            onPress={() => onDetail?.(data.id)}
-            className="w-1/3 mt-5 bg-[#1E5A99] rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
-          >
-            <View className="flex flex-row items-center justify-center">
-              <Ionicons name="document-text-outline" size={18} color="white" />
-              <Text className="text-white font-yekan mr-2">جزئیات بازی</Text>
-            </View>
-          </Pressable>
-        </View>
-      )}*/}
     </View>
   );
 };
