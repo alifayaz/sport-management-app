@@ -110,12 +110,14 @@ export default function MyGames() {
       </View>
 
       <View>
-        <Text className="text-xl text-primary font-yekanBold my-4">
+        <Text className="text-xl text-primary font-yekanBold mt-4">
           تاریخچه بازی های من
         </Text>
         {historyData?.length ? (
           historyData?.map((item, index) => {
-            return <MyCard data={item} key={index} onDetail={onDetail} />;
+            return (
+              <MyCard data={item} key={index} onDetail={onDetail} historyPage />
+            );
           })
         ) : (
           <NoData />

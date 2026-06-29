@@ -142,6 +142,23 @@ class ApiService {
     return response.json();
   }
 
+  async getMyAvailable() {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(
+      `${API_BASE_URL}/api/${APP_VERSION}/availabilities/me`,
+      {
+        headers,
+      },
+    );
+
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.message);
+    }
+
+    return response.json();
+  }
+
   async postAvailable(id: string) {
     const headers = await this.getAuthHeaders();
     const response = await fetch(
@@ -188,6 +205,26 @@ class ApiService {
         method: 'PATCH',
         headers,
         body: JSON.stringify({ match_id: id }),
+      },
+    );
+
+    if (!response.ok) {
+      const result = await response.json();
+      await this.getAuth(response.status);
+      throw new Error(result.message);
+    }
+
+    return response.json();
+  }
+
+  async postCancelMyGame(id: string) {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(
+      `${API_BASE_URL}/api/${APP_VERSION}/availabilities/cancel`,
+      {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ availability_id: id }),
       },
     );
 

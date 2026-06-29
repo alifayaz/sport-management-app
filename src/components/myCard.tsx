@@ -16,6 +16,10 @@ type Props = {
   onDetail?: (id: string) => void;
   loading?: boolean;
   offerPage?: boolean;
+  requestPage?: boolean;
+  cancelGame?: (id: string) => void;
+  cancelLoading?: boolean;
+  historyPage?: boolean;
 };
 
 const StatusBadge = ({ status }: { status: MatchStatus }) => {
@@ -76,11 +80,17 @@ const MyCard: React.FC<Props> = ({
   onDetail,
   loading,
   offerPage,
+  requestPage,
+  cancelGame,
+  cancelLoading,
+  historyPage,
 }) => {
   const duration = getDuration(data.start_time, data.end_time);
 
   return (
-    <View className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mt-4">
+    <View
+      className={`bg-white rounded-3xl p-5 shadow-sm border border-slate-100 mt-4 ${historyPage ? 'opacity-75' : 'opacity-100'}`}
+    >
       {/* HEADER */}
       <View className="flex-row items-center justify-between">
         <View>
@@ -128,7 +138,7 @@ const MyCard: React.FC<Props> = ({
           </Text>
         </View>
       </View>
-      {data.status !== 'waiting' && !offerPage && (
+      {data.status !== 'waiting' && !offerPage && !requestPage && (
         <Pressable
           onPress={() => onDetail?.(data.id)}
           className="mt-5 bg-[#1E5A99] rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
@@ -151,6 +161,21 @@ const MyCard: React.FC<Props> = ({
             <View className="flex flex-row items-center justify-center">
               <Ionicons name="add" size={18} color="white" />
               <Text className="text-white font-yekan mr-2">پیوستن به بازی</Text>
+            </View>
+          )}
+        </Pressable>
+      )}
+      {data.status === 'waiting' && requestPage && (
+        <Pressable
+          onPress={() => cancelGame?.(data.id)}
+          className="mt-5 bg-red-400 rounded-xl py-3 items-center active:opacity-80 flex-row justify-center"
+        >
+          {cancelLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <View className="flex flex-row items-center justify-center">
+              <Ionicons name="close-circle-outline" size={18} color="white" />
+              <Text className="text-white font-yekan mr-2">لغو بازی</Text>
             </View>
           )}
         </Pressable>
