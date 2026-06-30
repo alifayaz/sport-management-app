@@ -114,3 +114,20 @@ export type UserInfo = {
   rate: string;
   age: number;
 };
+
+export interface DashboardInfo {
+  players_count: number;
+  my_availability_count: number;
+  my_match_count: number;
+  my_match_canceled: number;
+  my_match_complete: number;
+  all_match_completed: number;
+  best_players: BestPlayers[];
+}
+
+export interface BestPlayers {
+  id: string;
+  first_name: string;
+  last_name: string;
+  rate: string;
+}

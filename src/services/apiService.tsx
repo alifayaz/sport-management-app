@@ -256,6 +256,25 @@ class ApiService {
 
     return response.json();
   }
+
+  async getDashboardInfo() {
+    const headers = await this.getAuthHeaders();
+    const response = await fetch(
+      `${API_BASE_URL}/api/${APP_VERSION}/common/dashboard`,
+      {
+        method: 'GET',
+        headers,
+      },
+    );
+
+    if (!response.ok) {
+      const result = await response.json();
+      await this.getAuth(response.status);
+      throw new Error(result.message);
+    }
+
+    return response.json();
+  }
 }
 
 export const apiService = new ApiService();
