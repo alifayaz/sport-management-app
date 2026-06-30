@@ -2,18 +2,15 @@ import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Pressable,
   RefreshControl,
   ScrollView,
-  Text,
   View,
 } from 'react-native';
 import { apiService } from '@/services/apiService';
-import MyCard from '@/components/myCard';
+import MyCard from '@/components/myCard/myCard';
 import { MatchData } from '@/types/schemas';
 import NoData from '@/components/common/noData';
-import { router, useFocusEffect } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from 'expo-router';
 
 export default function Requests() {
   const [data, setData] = useState<MatchData[]>([]);
@@ -89,24 +86,6 @@ export default function Requests() {
       }
     >
       <View>
-        <View className="flex flex-row justify-between items-center mb-4">
-          <Text className="text-xl text-primary font-yekanBold mt-4">
-            درخواست های من
-          </Text>
-          <Pressable
-            onPress={() => {
-              if (router.canGoBack()) {
-                router.back();
-              }
-            }}
-            className="items-center flex-row justify-center mt-4"
-          >
-            <View className="flex flex-row items-center justify-center">
-              <Text className="font-yekan mr-2">بازگشت</Text>
-              <Ionicons name="arrow-back" size={18} />
-            </View>
-          </Pressable>
-        </View>
         {data?.length ? (
           data?.map((item, index) => (
             <MyCard

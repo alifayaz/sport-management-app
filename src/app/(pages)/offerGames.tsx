@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import { apiService } from '@/services/apiService';
-import MyCard from '@/components/myCard';
+import MyCard from '@/components/myCard/myCard';
 import { MatchData } from '@/types/schemas';
 import NoData from '@/components/common/noData';
 import { useFocusEffect } from 'expo-router';

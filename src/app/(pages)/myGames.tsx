@@ -2,25 +2,27 @@ import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Pressable,
   RefreshControl,
   ScrollView,
   Text,
   View,
 } from 'react-native';
-import { apiService } from '@/services/apiService';
-import MyCard from '@/components/myCard';
-import { MatchData } from '@/types/schemas';
-import NoData from '@/components/common/noData';
 import { router, useFocusEffect } from 'expo-router';
+
+import { apiService } from '@/services/apiService';
+import { MatchData } from '@/types/schemas';
+
+import MyCard from '@/components/myCard/myCard';
+import NoData from '@/components/common/noData';
+
 import { Ionicons } from '@expo/vector-icons';
 
 export default function MyGames() {
-  const [data, setData] = useState<MatchData>();
-  const [historyData, setHistoryData] = useState<MatchData[]>([]);
+  const [activeMatch, setActiveMatch] = useState<MatchData>();
+  const [history, setHistory] = useState<MatchData[]>([]);
 
-  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -30,34 +32,29 @@ export default function MyGames() {
 
   const loadData = async () => {
     try {
-      const [data, historyData] = await Promise.allSettled([
+      const [active, historyResult] = await Promise.allSettled([
         apiService.getMatchActive(),
         apiService.getMatchHistory(),
       ]);
-      if (data.status === 'fulfilled') {
-        setData(data.value.data);
+
+      if (active.status === 'fulfilled') {
+        setActiveMatch(active.value.data);
       }
 
-      if (historyData.status === 'fulfilled') {
-        setHistoryData(historyData.value.data);
-      }
-      if (data.status === 'rejected') {
-        Alert.alert('خطا', data.reason);
+      if (historyResult.status === 'fulfilled') {
+        setHistory(historyResult.value.data);
       }
 
-      if (historyData.status === 'rejected') {
-        Alert.alert('خطا', historyData.reason);
+      if (active.status === 'rejected') {
+        Alert.alert('خطا', active.reason?.toString());
+      }
+
+      if (historyResult.status === 'rejected') {
+        Alert.alert('خطا', historyResult.reason?.toString());
       }
     } finally {
       setLoading(false);
     }
-  };
-
-  const onDetail = async (id: string) => {
-    router.push({
-      pathname: '/gameDetail/[id]',
-      params: { id },
-    });
   };
 
   const onRefresh = async () => {
@@ -66,59 +63,70 @@ export default function MyGames() {
     setRefreshing(false);
   };
 
-  return loading ? (
-    <View className="flex-1 items-center justify-center">
-      <ActivityIndicator size="large" color="#1E5A99" />
-    </View>
-  ) : (
+  const onDetail = (id: string) => {
+    router.push({
+      pathname: '/gameDetail/[id]',
+      params: { id },
+    });
+  };
+
+  if (loading) {
+    return (
+      <View className="flex-1 items-center justify-center">
+        <ActivityIndicator size="large" color="#1E5A99" />
+      </View>
+    );
+  }
+
+  return (
     <ScrollView
       contentContainerStyle={{
-        flexGrow: 1,
-        paddingHorizontal: 12,
+        paddingHorizontal: 16,
+        paddingTop: 12,
         paddingBottom: 100,
       }}
       showsVerticalScrollIndicator={false}
-      showsHorizontalScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <View>
-        <View className="flex flex-row justify-between items-center">
-          <Text className="text-xl text-primary font-yekanBold mt-4">
-            بازی های من
-          </Text>
-          <Pressable
-            onPress={() => {
-              if (router.canGoBack()) {
-                router.back();
-              }
-            }}
-            className="items-center flex-row justify-center mt-4"
-          >
-            <View className="flex flex-row items-center justify-center">
-              <Text className="font-yekan mr-2">بازگشت</Text>
-              <Ionicons name="arrow-back" size={18} />
-            </View>
-          </Pressable>
+      {/* Header */}
+
+      <View className="mb-6">
+        <Text className="font-yekanBold text-xl text-primary">
+          مدیریت بازی‌های فعال و تاریخچه
+        </Text>
+      </View>
+
+      {/* Active Match */}
+
+      <View className="mb-8">
+        <View className="flex-row items-center mb-3">
+          <Ionicons name="football-outline" size={22} color="#2563EB" />
+
+          <Text className="font-yekanBold text-xl mr-2">بازی فعال</Text>
         </View>
-        {data ? (
-          <MyCard data={data} onDetail={onDetail} loading={loading} />
+
+        {activeMatch ? (
+          <MyCard data={activeMatch} onDetail={onDetail} />
         ) : (
           <NoData />
         )}
       </View>
 
+      {/* History */}
+
       <View>
-        <Text className="text-xl text-primary font-yekanBold mt-4">
-          تاریخچه بازی های من
-        </Text>
-        {historyData?.length ? (
-          historyData?.map((item, index) => {
-            return (
-              <MyCard data={item} key={index} onDetail={onDetail} historyPage />
-            );
-          })
+        <View className="flex-row items-center mb-3">
+          <Ionicons name="time-outline" size={22} color="#64748B" />
+
+          <Text className="font-yekanBold text-xl mr-2">تاریخچه بازی‌ها</Text>
+        </View>
+
+        {history.length ? (
+          history.map((item) => (
+            <MyCard key={item.id} data={item} onDetail={onDetail} />
+          ))
         ) : (
           <NoData />
         )}

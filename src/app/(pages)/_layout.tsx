@@ -1,4 +1,4 @@
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import HamburgerMenu from '@/components/hamburgerMenu';
 import { useEffect } from 'react';
@@ -17,8 +17,17 @@ export default function PagesLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerTitleStyle: {
+          fontFamily: 'YekanBakhBold',
+          fontSize: 20,
+        },
         headerShown: true,
-        headerRight: () => <HamburgerMenu />,
+        headerRight: () => (
+          <Pressable onPress={() => router.back()} style={{ marginLeft: 10 }}>
+            <Ionicons name="arrow-back" size={24} color="#1E5A99" />
+          </Pressable>
+        ),
+        headerLeft: () => <HamburgerMenu />,
         sceneStyle: {
           backgroundColor: '#f5f5f5',
         },

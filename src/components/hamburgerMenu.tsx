@@ -12,6 +12,7 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { apiService } from '@/services/apiService';
 import { UserInfo } from '@/types/schemas';
 
@@ -36,7 +37,10 @@ export default function HamburgerMenu() {
       }
     } else {
       Alert.alert('خروج', 'آیا مطمئن هستید که می‌خواهید خارج شوید؟', [
-        { text: 'لغو', style: 'cancel' },
+        {
+          text: 'لغو',
+          style: 'cancel',
+        },
         {
           text: 'خروج',
           style: 'destructive',
@@ -57,7 +61,6 @@ export default function HamburgerMenu() {
       if (error) {
         Alert.alert('خطا', error.toString());
       }
-    } finally {
     }
   };
 
@@ -66,14 +69,12 @@ export default function HamburgerMenu() {
   }, []);
 
   return (
-    <>
+    <View style={{ marginHorizontal: 10 }}>
       <TouchableOpacity
         onPress={() => setVisible(true)}
         style={styles.menuButton}
       >
-        <Text style={styles.menuIcon}>
-          <Ionicons name="menu-sharp" color="#1E5A99" size={30} />
-        </Text>
+        <Ionicons name="menu" size={30} color="#1E5A99" />
       </TouchableOpacity>
 
       <Modal
@@ -89,63 +90,118 @@ export default function HamburgerMenu() {
           />
 
           <View style={styles.drawer}>
-            <View className="flex flex-row justify-between">
-              <View className="flex flex-row justify-between gap-2 text-right">
-                <Text>{userData?.first_name}</Text>
-                <Text>{userData?.last_name}</Text>
+            {/* Profile */}
+
+            <View style={styles.profileCard}>
+              <View style={styles.avatar}>
+                <Ionicons name="person" size={42} color="white" />
               </View>
-              <View className="flex flex-row justify-between items-center gap-2">
-                <Text>{userData?.rate}</Text>
-                <Ionicons name="star" color="#ffce10" size={20} />
+
+              <Text className="font-yekanBold" style={styles.profileName}>
+                {userData?.first_name} {userData?.last_name}
+              </Text>
+
+              <View style={styles.rateContainer}>
+                <Text className="font-yekan" style={styles.rate}>
+                  {Number(userData?.rate || 0).toFixed(1)}
+                </Text>
+
+                <Ionicons name="star" size={18} color="#FBBF24" />
               </View>
             </View>
-            <Text style={styles.title}>منو</Text>
+
+            {/* Menu */}
 
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => navigate('/dashboard')}
             >
-              <Text style={styles.menuText}>داشبورد</Text>
+              <Ionicons name="grid-outline" size={22} color="#1E5A99" />
+
+              <Text className="font-yekan" style={styles.menuText}>
+                داشبورد
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => navigate('/reports')}
             >
-              <Text style={styles.menuText}>گزارشات</Text>
+              <Ionicons name="bar-chart-outline" size={22} color="#1E5A99" />
+
+              <Text className="font-yekan" style={styles.menuText}>
+                گزارشات
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.menuItem}
               onPress={() => navigate('/')}
             >
-              <Text style={styles.menuText}>تنظیمات</Text>
+              <Ionicons name="settings-outline" size={22} color="#1E5A99" />
+
+              <Text className="font-yekan" style={styles.menuText}>
+                تنظیمات
+              </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setVisible(false)}
-            >
-              <Pressable style={styles.button} onPress={handleLogout}>
-                <Ionicons name="log-out" color="#1E5A99" size={25} />
-                <Text style={styles.buttonText}>خروج</Text>
-              </Pressable>
+            {/* Logout */}
+
+            <TouchableOpacity style={styles.logoutCard} onPress={handleLogout}>
+              <Ionicons name="log-out-outline" size={22} color="#EF4444" />
+
+              <Text className="font-yekanBold" style={styles.logoutText}>
+                خروج از حساب
+              </Text>
             </TouchableOpacity>
+
+            {/* Support */}
+
+            <View style={styles.supportSection}>
+              <Text className="font-yekanBold" style={styles.supportTitle}>
+                پشتیبانی
+              </Text>
+
+              <View style={styles.supportItem}>
+                <Ionicons name="call-outline" size={18} color="#1E5A99" />
+
+                <Text className="font-yekan" style={styles.supportText}>
+                  09152027268
+                </Text>
+              </View>
+
+              <View style={styles.supportItem}>
+                <Ionicons name="call-outline" size={18} color="#1E5A99" />
+
+                <Text className="font-yekan" style={styles.supportText}>
+                  09150465254
+                </Text>
+              </View>
+
+              <View style={styles.supportItem}>
+                <Ionicons name="mail-outline" size={18} color="#1E5A99" />
+
+                <Text className="font-yekan" style={styles.supportText}>
+                  info@bazyar.ir
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.versionContainer}>
+              <Text className="font-yekan" style={styles.versionText}>
+                Bazyar v1.0.0
+              </Text>
+            </View>
           </View>
         </View>
       </Modal>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   menuButton: {
     padding: 8,
-  },
-
-  menuIcon: {
-    fontSize: 28,
-    color: '#1E5A99',
   },
 
   overlay: {
@@ -155,62 +211,142 @@ const styles = StyleSheet.create({
 
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(15,23,42,0.45)',
   },
 
   drawer: {
-    width: 280,
-    backgroundColor: '#fff',
-    paddingTop: 40,
-    paddingHorizontal: 20,
-    elevation: 10,
+    width: 300,
+    backgroundColor: '#F8FAFC',
+    paddingTop: 28,
+    paddingHorizontal: 18,
+    paddingBottom: 30,
     marginLeft: 'auto',
+    elevation: 15,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
   },
 
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 25,
-    marginTop: 20,
-    fontFamily: 'YekanBakh',
-    color: '#1E5A99',
+  /* ---------------- Profile ---------------- */
+
+  profileCard: {
+    backgroundColor: '#1E5A99',
+    borderRadius: 24,
+    paddingVertical: 22,
+    paddingHorizontal: 18,
+    alignItems: 'center',
+    marginBottom: 28,
   },
+
+  avatar: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    backgroundColor: 'rgba(255,255,255,.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  profileName: {
+    color: '#fff',
+    fontSize: 20,
+    marginTop: 16,
+    textAlign: 'center',
+  },
+
+  rateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    backgroundColor: 'rgba(255,255,255,.12)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+
+  rate: {
+    color: '#fff',
+    fontSize: 14,
+    marginLeft: 6,
+  },
+
+  /* ---------------- Menu ---------------- */
 
   menuItem: {
-    paddingVertical: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 17,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#E2E8F0',
   },
 
   menuText: {
-    fontSize: 14,
-    fontFamily: 'YekanBakh',
+    marginRight: 14,
+    fontSize: 15,
+    color: '#0F172A',
   },
 
-  closeButton: {
-    marginTop: 30,
-    backgroundColor: '#f5f5f5',
-    padding: 12,
-    borderRadius: 8,
-  },
+  /* ---------------- Logout ---------------- */
 
-  closeText: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  buttonText: {
-    color: '#1E5A99',
-    fontSize: 13,
-    fontWeight: 'bold',
-    fontFamily: 'YekanBakh',
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
+  logoutCard: {
+    marginTop: 26,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    gap: 5,
+    backgroundColor: '#FEF2F2',
+    borderRadius: 18,
+    paddingVertical: 14,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+  },
+
+  logoutText: {
+    color: '#EF4444',
+    marginRight: 8,
+    fontSize: 15,
+  },
+
+  /* ---------------- Support ---------------- */
+
+  supportSection: {
+    marginTop: 32,
+    paddingTop: 22,
+    borderTopWidth: 1,
+    borderTopColor: '#E2E8F0',
+  },
+
+  supportTitle: {
+    fontSize: 18,
+    color: '#1E293B',
+    marginBottom: 18,
+  },
+
+  supportItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 14,
+  },
+
+  supportText: {
+    marginRight: 12,
+    fontSize: 14,
+    color: '#475569',
+  },
+
+  /* ---------------- Version ---------------- */
+
+  versionContainer: {
+    marginTop: 'auto',
+    alignItems: 'center',
+    paddingTop: 30,
+  },
+
+  versionText: {
+    color: '#94A3B8',
+    fontSize: 12,
   },
 });
