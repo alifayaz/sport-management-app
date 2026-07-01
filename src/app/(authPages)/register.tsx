@@ -60,7 +60,7 @@ export default function Register() {
         <View style={styles.logoContainer}>
           <Image
             alt=""
-            source={require('@/assets/images/logo.jpg')}
+            source={require('@/assets/images/logo.png')}
             style={styles.logo}
           />
           <Text style={styles.title}>بازیار</Text>
