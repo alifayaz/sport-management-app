@@ -51,19 +51,19 @@ export default function StatusBadge({ status }: Props) {
   return (
     <View
       style={{
-        backgroundColor: item.bg,
+        backgroundColor: item?.bg,
       }}
       className="self-start rounded-full px-4 py-2 flex-row items-center"
     >
-      <Ionicons name={item.icon as any} size={16} color={item.text} />
+      <Ionicons name={item?.icon as any} size={16} color={item?.text} />
 
       <Text
         style={{
-          color: item.text,
+          color: item?.text,
         }}
         className="font-yekanBold text-xs mr-2"
       >
-        {item.label}
+        {item?.label}
       </Text>
     </View>
   );

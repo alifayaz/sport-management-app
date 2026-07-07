@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Platform, Pressable, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import * as Location from 'expo-location';
@@ -20,6 +20,7 @@ export default function LeafletMap({
   onLocationChange,
 }: Props) {
   const webRef = useRef<WebView>(null);
+  const [radius, setRadius] = useState(1000);
 
   const updateCurrentLocation = async () => {
     const permission = await Location.requestForegroundPermissionsAsync();
@@ -79,6 +80,15 @@ export default function LeafletMap({
       );
     }
   }, [latitude, longitude]);
+
+  useEffect(() => {
+    webRef.current?.postMessage(
+      JSON.stringify({
+        type: 'setRadius',
+        radius,
+      }),
+    );
+  }, [radius]);
 
   const html = useMemo(
     () => `
@@ -140,6 +150,16 @@ draggable:editable
 }
 ).addTo(map);
 
+let radius = 1000;
+
+const circle = L.circle([35.6892, 51.389], {
+    radius,
+    color: "#208AEF",
+    weight: 2,
+    fillColor: "#208AEF",
+    fillOpacity: 0.15,
+}).addTo(map);
+
 function send(lat,lng){
 
 window.ReactNativeWebView.postMessage(
@@ -155,14 +175,14 @@ function update(lat,lng){
 
 marker.setLatLng([lat,lng]);
 
-map.flyTo(
-[lat,lng],
-16,
-{
-animate:true,
-duration:0.5
-}
-);
+circle.setLatLng([lat,lng]);
+
+circle.setRadius(radius);
+
+map.flyToBounds(circle.getBounds(), {
+    padding: [20,20],
+    duration: 0.5
+});
 
 if(editable){
 send(lat,lng);
@@ -175,6 +195,7 @@ if(editable){
 marker.on("dragend",function(e){
 
 const p=e.target.getLatLng();
+circle.setLatLng(p);
 
 send(
 p.lat,
@@ -186,6 +207,8 @@ p.lng
 map.on("click",function(e){
 
 marker.setLatLng(e.latlng);
+
+circle.setLatLng(e.latlng);
 
 send(
 e.latlng.lat,
@@ -217,6 +240,15 @@ data.longitude
 );
 
 }
+
+  if(data.type === "setRadius"){
+        radius = data.radius;
+        circle.setRadius(radius);
+         map.fitBounds(circle.getBounds(), {
+        padding: [20,20],
+        animate: true
+    });
+    }
 
 }
 
@@ -253,6 +285,7 @@ window.addEventListener("message",receive);
         height: 220,
         borderRadius: 12,
         overflow: 'hidden',
+        position: 'relative',
       }}
     >
       <WebView
@@ -267,6 +300,83 @@ window.addEventListener("message",receive);
           onLocationChange?.(data.latitude, data.longitude);
         }}
       />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#fff',
+          borderRadius: 30,
+          padding: 3,
+          alignSelf: 'center',
+          elevation: 4,
+          shadowColor: '#000',
+          shadowOpacity: 0.12,
+          shadowRadius: 8,
+          shadowOffset: { width: 0, height: 2 },
+          position: 'absolute',
+          top: 16,
+          right: 16,
+        }}
+      >
+        <Pressable
+          onPress={() => setRadius((r) => Math.max(1000, r - 1000))}
+          style={{
+            width: 35,
+            height: 35,
+            borderRadius: 21,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#F3F4F6',
+          }}
+        >
+          <MaterialIcons
+            name="remove-circle-outline"
+            size={24}
+            color="#208AEF"
+          />
+        </Pressable>
+
+        <View
+          style={{
+            paddingHorizontal: 20,
+            alignItems: 'center',
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 12,
+              color: '#666',
+            }}
+          >
+            شعاع
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 15,
+              fontWeight: '700',
+              color: '#111',
+            }}
+          >
+            {radius / 1000} km
+          </Text>
+        </View>
+
+        <Pressable
+          onPress={() => setRadius((r) => Math.min(20000, r + 1000))}
+          style={{
+            width: 35,
+            height: 35,
+            borderRadius: 21,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#208AEF',
+          }}
+        >
+          <MaterialIcons name="add-circle-outline" size={24} color="#fff" />
+        </Pressable>
+      </View>
 
       {showCurrentLocationButton && (
         <Pressable
