@@ -1,0 +1,80 @@
+import type { ExpoConfig } from 'expo/config';
+
+const config: ExpoConfig = {
+  name: 'bazyar',
+  slug: 'sport-management',
+  version: '1.0.0',
+  orientation: 'portrait',
+  icon: './assets/images/logo.png',
+  scheme: 'sportmanagement',
+  userInterfaceStyle: 'automatic',
+
+  ios: {
+    icon: './assets/images/logo.png',
+  },
+
+  android: {
+    adaptiveIcon: {
+      backgroundColor: '#E6F4FE',
+      foregroundImage: './assets/images/logo.png',
+    },
+    predictiveBackGestureEnabled: false,
+    package: 'com.alifayaz.sportmanagement',
+  },
+
+  web: {
+    output: 'static',
+    favicon: './assets/images/logo.png',
+  },
+
+  extra: {
+    API_URL: process.env.EXPO_PUBLIC_API_URL,
+    APP_VERSION: process.env.EXPO_PUBLIC_APP_VERSION ?? 'v1',
+
+    router: {},
+
+    eas: {
+      projectId: '3d2d5c71-de16-4b0e-84c5-668564133e32',
+    },
+  },
+
+  plugins: [
+    'expo-router',
+    [
+      'expo-splash-screen',
+      {
+        backgroundColor: '#208AEF',
+        android: {
+          image: './assets/images/logo.png',
+          imageWidth: 76,
+        },
+      },
+    ],
+    [
+      'expo-location',
+      {
+        locationWhenInUsePermission:
+          'برای انتخاب موقعیت خود، برنامه به دسترسی موقعیت مکانی نیاز دارد.',
+      },
+    ],
+    'expo-image',
+    'expo-font',
+  ],
+
+  experiments: {
+    typedRoutes: true,
+    reactCompiler: true,
+  },
+
+  owner: 'alifayaz',
+
+  runtimeVersion: {
+    policy: 'appVersion',
+  },
+
+  updates: {
+    url: 'https://u.expo.dev/3d2d5c71-de16-4b0e-84c5-668564133e32',
+  },
+};
+
+export default config;
