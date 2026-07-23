@@ -12,13 +12,14 @@ import {
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useCheckToken } from '@/hooks/token';
 import { apiService } from '@/services/apiService';
 import { UserInfo } from '@/types/schemas';
 
 export default function HamburgerMenu() {
   const [visible, setVisible] = useState(false);
   const [userData, setUserData] = useState<UserInfo>();
+  const hasToken = useCheckToken();
 
   const navigate = (path: string) => {
     setVisible(false);
@@ -91,69 +92,79 @@ export default function HamburgerMenu() {
 
           <View style={styles.drawer}>
             {/* Profile */}
+            {hasToken && (
+              <>
+                <View style={styles.profileCard}>
+                  <View style={styles.avatar}>
+                    <Ionicons name="person" size={42} color="white" />
+                  </View>
 
-            <View style={styles.profileCard}>
-              <View style={styles.avatar}>
-                <Ionicons name="person" size={42} color="white" />
-              </View>
+                  <Text className="font-yekanBold" style={styles.profileName}>
+                    {userData?.first_name} {userData?.last_name}
+                  </Text>
 
-              <Text className="font-yekanBold" style={styles.profileName}>
-                {userData?.first_name} {userData?.last_name}
-              </Text>
+                  <View style={styles.rateContainer}>
+                    <Text className="font-yekan" style={styles.rate}>
+                      {Number(userData?.rate || 0).toFixed(1)}
+                    </Text>
 
-              <View style={styles.rateContainer}>
-                <Text className="font-yekan" style={styles.rate}>
-                  {Number(userData?.rate || 0).toFixed(1)}
-                </Text>
+                    <Ionicons name="star" size={18} color="#FBBF24" />
+                  </View>
+                </View>
 
-                <Ionicons name="star" size={18} color="#FBBF24" />
-              </View>
-            </View>
+                {/* Menu */}
 
-            {/* Menu */}
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => navigate('/dashboard')}
+                >
+                  <Ionicons name="grid-outline" size={22} color="#1E5A99" />
 
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => navigate('/dashboard')}
-            >
-              <Ionicons name="grid-outline" size={22} color="#1E5A99" />
+                  <Text className="font-yekan" style={styles.menuText}>
+                    داشبورد
+                  </Text>
+                </TouchableOpacity>
 
-              <Text className="font-yekan" style={styles.menuText}>
-                داشبورد
-              </Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => navigate('/reports')}
+                >
+                  <Ionicons
+                    name="bar-chart-outline"
+                    size={22}
+                    color="#1E5A99"
+                  />
 
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => navigate('/reports')}
-            >
-              <Ionicons name="bar-chart-outline" size={22} color="#1E5A99" />
+                  <Text className="font-yekan" style={styles.menuText}>
+                    گزارشات
+                  </Text>
+                </TouchableOpacity>
 
-              <Text className="font-yekan" style={styles.menuText}>
-                گزارشات
-              </Text>
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={() => navigate('/')}
+                >
+                  <Ionicons name="settings-outline" size={22} color="#1E5A99" />
 
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => navigate('/')}
-            >
-              <Ionicons name="settings-outline" size={22} color="#1E5A99" />
+                  <Text className="font-yekan" style={styles.menuText}>
+                    تنظیمات
+                  </Text>
+                </TouchableOpacity>
 
-              <Text className="font-yekan" style={styles.menuText}>
-                تنظیمات
-              </Text>
-            </TouchableOpacity>
+                {/* Logout */}
 
-            {/* Logout */}
+                <TouchableOpacity
+                  style={styles.logoutCard}
+                  onPress={handleLogout}
+                >
+                  <Ionicons name="log-out-outline" size={22} color="#EF4444" />
 
-            <TouchableOpacity style={styles.logoutCard} onPress={handleLogout}>
-              <Ionicons name="log-out-outline" size={22} color="#EF4444" />
-
-              <Text className="font-yekanBold" style={styles.logoutText}>
-                خروج از حساب
-              </Text>
-            </TouchableOpacity>
+                  <Text className="font-yekanBold" style={styles.logoutText}>
+                    خروج از حساب
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
 
             {/* Support */}
 

@@ -11,8 +11,10 @@ import MyCard from '@/components/myCard/myCard';
 import { MatchData } from '@/types/schemas';
 import NoData from '@/components/common/noData';
 import { useFocusEffect } from 'expo-router';
+import { useAuth } from '@/hooks/auth';
 
 export default function Requests() {
+  useAuth();
   const [data, setData] = useState<MatchData[]>([]);
 
   const [refreshing, setRefreshing] = useState(false);

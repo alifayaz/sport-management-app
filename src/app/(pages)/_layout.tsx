@@ -17,9 +17,14 @@ export default function PagesLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerStyle: {
+          backgroundColor: '#fff',
+        },
+        headerTintColor: '#1E5A99',
         headerTitleStyle: {
           fontFamily: 'YekanBakhBold',
           fontSize: 20,
+          color: '#1E5A99',
         },
         headerShown: true,
         headerRight: () => (

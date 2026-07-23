@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,6 +13,7 @@ import {
   Image,
   Pressable,
   ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiService } from '@/services/apiService';
@@ -21,6 +22,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoginFormType, loginSchema } from '@/types/schemas';
 import { router } from 'expo-router';
 import CustomTextInput from '@/components/ui/textInput';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Login() {
   const { handleSubmit, control } = useForm({
@@ -52,6 +54,9 @@ export default function Login() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <TouchableOpacity onPress={() => router.push('/')} className="mt-4 ml-2">
+        <Ionicons name="arrow-back" size={25} color="#1E5A99" />
+      </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.logoContainer}>
           <Image

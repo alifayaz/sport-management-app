@@ -19,6 +19,13 @@ class ApiService {
     };
   }
 
+  private async checkAuth() {
+    const token = await AsyncStorage.getItem('authToken');
+    if (token) {
+      return true;
+    }
+  }
+
   private async getAuth(status: number) {
     if (status === 401) {
       await AsyncStorage.removeItem('authToken');
@@ -181,6 +188,10 @@ class ApiService {
 
   async getUserInfo() {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) {
+      return;
+    }
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/users/info`,
       {
@@ -258,12 +269,10 @@ class ApiService {
   }
 
   async getDashboardInfo() {
-    const headers = await this.getAuthHeaders();
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/common/dashboard`,
       {
         method: 'GET',
-        headers,
       },
     );
 

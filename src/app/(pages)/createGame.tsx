@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   StyleSheet,
   Alert,
-  ScrollView,
   Text,
   Pressable,
   ActivityIndicator,
@@ -21,8 +20,10 @@ import CustomTextInput from '@/components/ui/textInput';
 import CustomDropdown from '@/components/ui/dropdown';
 import JalaliReservationPicker from '@/components/ui/jalaliDateTimePicker';
 import LeafletMap from '@/components/leafletMap';
+import { useAuth } from '@/hooks/auth';
 
 export default function CreateGame() {
+  useAuth();
   const { handleSubmit, control, resetField, watch, setValue } = useForm({
     resolver: zodResolver(createAvailabilitySchema),
     defaultValues: {
