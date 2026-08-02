@@ -29,7 +29,7 @@ class ApiService {
   private async getAuth(status: number) {
     if (status === 401) {
       await AsyncStorage.removeItem('authToken');
-      router.push('/');
+      router.push('/login');
     }
   }
 
@@ -143,6 +143,7 @@ class ApiService {
 
     if (!response.ok) {
       const result = await response.json();
+      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 
@@ -160,6 +161,7 @@ class ApiService {
 
     if (!response.ok) {
       const result = await response.json();
+      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 
@@ -278,7 +280,6 @@ class ApiService {
 
     if (!response.ok) {
       const result = await response.json();
-      await this.getAuth(response.status);
       throw new Error(result.message);
     }
 

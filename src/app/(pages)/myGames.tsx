@@ -16,10 +16,8 @@ import MyCard from '@/components/myCard/myCard';
 import NoData from '@/components/common/noData';
 
 import { Ionicons } from '@expo/vector-icons';
-import { useAuth } from '@/hooks/auth';
 
 export default function MyGames() {
-  useAuth();
   const [activeMatch, setActiveMatch] = useState<MatchData>();
   const [history, setHistory] = useState<MatchData[]>([]);
 

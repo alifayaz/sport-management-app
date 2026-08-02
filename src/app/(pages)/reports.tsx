@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { View, ScrollView, RefreshControl, Alert, Text } from 'react-native';
 import { apiService } from '@/services/apiService';
-import { useAuth } from '@/hooks/auth';
 
 interface Data {
   totalMembers: number;
@@ -12,7 +11,6 @@ interface Data {
 }
 
 export default function Reports() {
-  useAuth();
   const [data, setData] = useState<Data>();
 
   const [refreshing, setRefreshing] = useState(false);
