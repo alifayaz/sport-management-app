@@ -14,7 +14,19 @@ type Props = {
 
 export default function BestPlayersCard({ players }: Props) {
   return (
-    <View className="bg-white rounded-2xl p-4 mt-4 border border-slate-100">
+    <View
+      className="bg-white rounded-2xl p-4 mt-4 border border-slate-100"
+      style={{
+        shadowColor: '#1E5A99',
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        elevation: 5,
+      }}
+    >
       <View className="flex-row items-center mb-4">
         <Ionicons name="trophy" size={22} color="#F59E0B" />
 

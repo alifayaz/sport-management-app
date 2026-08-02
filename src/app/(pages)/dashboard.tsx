@@ -6,11 +6,14 @@ import { router } from 'expo-router';
 import { DashboardInfo } from '@/types/schemas';
 import DashboardStatCard from '@/components/dashboardStatCard';
 import BestPlayersCard from '@/components/bestPlayersCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NewsTicker from '@/components/newsTicker';
 
 export default function Dashboard() {
   const [data, setData] = useState<DashboardInfo>();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [hasToken, setHasToken] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -20,6 +23,9 @@ export default function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
+      const token = await AsyncStorage.getItem('authToken');
+      setHasToken(!!token);
+
       const listData = await apiService.getDashboardInfo();
       setData(listData?.data);
     } catch (error) {
@@ -48,9 +54,10 @@ export default function Dashboard() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
+      <NewsTicker />
       <View className="flex-row flex-wrap justify-between mt-4">
         <DashboardStatCard
-          title="بازی‌های من"
+          title={hasToken ? 'بازی‌های من' : 'همه بازی ها'}
           value={data?.my_match_count || 0}
           icon="game-controller-outline"
           color="#2563EB"

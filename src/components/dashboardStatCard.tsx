@@ -22,6 +22,16 @@ export default function DashboardStatCard({
     <Pressable
       onPress={onPress}
       className="bg-white rounded-2xl p-4 w-[48%] mb-4 border border-slate-100 active:opacity-80"
+      style={{
+        shadowColor: '#1E5A99',
+        shadowOffset: {
+          width: 0,
+          height: 4,
+        },
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        elevation: 5,
+      }}
     >
       <View className="flex-row justify-between items-center">
         <View

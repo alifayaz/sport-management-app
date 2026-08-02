@@ -193,7 +193,7 @@ export default function HamburgerMenu() {
                 <Ionicons name="mail-outline" size={18} color="#1E5A99" />
 
                 <Text className="font-yekan" style={styles.supportText}>
-                  info@bazyar.ir
+                  info@launchstudio.ir
                 </Text>
               </View>
             </View>
