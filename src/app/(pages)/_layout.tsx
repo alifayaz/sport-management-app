@@ -16,7 +16,7 @@ export default function PagesLayout() {
   }, []);
   return (
     <Tabs
-      screenOptions={{
+      screenOptions={({ route }) => ({
         headerStyle: {
           backgroundColor: '#fff',
         },
@@ -27,11 +27,12 @@ export default function PagesLayout() {
           color: '#1E5A99',
         },
         headerShown: true,
-        headerRight: () => (
-          <Pressable onPress={() => router.back()} style={{ marginLeft: 10 }}>
-            <Ionicons name="arrow-back" size={24} color="#1E5A99" />
-          </Pressable>
-        ),
+        headerRight: () =>
+          route.name === 'dashboard' ? null : (
+            <Pressable onPress={() => router.back()} style={{ marginLeft: 10 }}>
+              <Ionicons name="arrow-back" size={24} color="#1E5A99" />
+            </Pressable>
+          ),
         headerLeft: () => <HamburgerMenu />,
         sceneStyle: {
           backgroundColor: '#f5f5f5',
@@ -56,7 +57,7 @@ export default function PagesLayout() {
         },
         tabBarInactiveTintColor: '#1E5A99',
         tabBarActiveTintColor: '#FF5722',
-      }}
+      })}
     >
       <Tabs.Screen
         name="dashboard"
