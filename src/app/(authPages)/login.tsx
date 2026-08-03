@@ -54,8 +54,16 @@ export default function Login() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <TouchableOpacity onPress={() => router.push('/')} className="mt-4 ml-2">
-        <Ionicons name="arrow-back" size={25} color="#1E5A99" />
+      <TouchableOpacity
+        onPress={() => router.push('/')}
+        className="mt-4 mx-5 flex justify-end"
+      >
+        <Ionicons
+          name="arrow-back"
+          size={25}
+          color="#1E5A99"
+          className="flex items-center justify-center bg-gray-200 w-9 h-9 rounded-full"
+        />
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.logoContainer}>

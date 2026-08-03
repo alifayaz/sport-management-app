@@ -19,11 +19,22 @@ class ApiService {
     };
   }
 
-  private async checkAuth() {
+  private async checkAuthUserDetail() {
     const token = await AsyncStorage.getItem('authToken');
     if (token) {
       return true;
     }
+  }
+
+  private async checkAuth() {
+    const token = await AsyncStorage.getItem('authToken');
+
+    if (!token) {
+      router.replace('/login');
+      return false;
+    }
+
+    return true;
   }
 
   private async getAuth(status: number) {
@@ -78,6 +89,9 @@ class ApiService {
 
   async getMatchActive() {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/match/active`,
       {
@@ -96,6 +110,9 @@ class ApiService {
 
   async getMatchDetail(id: string) {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/match/details`,
       {
@@ -116,6 +133,9 @@ class ApiService {
 
   async getMatchHistory() {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/match/history`,
       {
@@ -134,6 +154,9 @@ class ApiService {
 
   async getAvailableList() {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/availabilities`,
       {
@@ -152,6 +175,9 @@ class ApiService {
 
   async getMyAvailable() {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/availabilities/me`,
       {
@@ -170,6 +196,9 @@ class ApiService {
 
   async postAvailable(id: string) {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/availabilities/accept`,
       {
@@ -190,10 +219,9 @@ class ApiService {
 
   async getUserInfo() {
     const headers = await this.getAuthHeaders();
-    const auth = await this.checkAuth();
-    if (!auth) {
-      return;
-    }
+    const auth = await this.checkAuthUserDetail();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/users/info`,
       {
@@ -212,6 +240,9 @@ class ApiService {
 
   async postCancelGame(id: string) {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/match/cancel`,
       {
@@ -232,6 +263,9 @@ class ApiService {
 
   async postCancelMyGame(id: string) {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/availabilities/cancel`,
       {
@@ -252,6 +286,9 @@ class ApiService {
 
   async createGame(body: CreateAvailabilityType) {
     const headers = await this.getAuthHeaders();
+    const auth = await this.checkAuth();
+    if (!auth) return;
+
     const response = await fetch(
       `${API_BASE_URL}/api/${APP_VERSION}/availabilities/create`,
       {

@@ -38,11 +38,11 @@ export default function MyGames() {
       ]);
 
       if (active.status === 'fulfilled') {
-        setActiveMatch(active.value.data);
+        setActiveMatch(active.value?.data);
       }
 
       if (historyResult.status === 'fulfilled') {
-        setHistory(historyResult.value.data);
+        setHistory(historyResult.value?.data);
       }
 
       if (active.status === 'rejected') {
