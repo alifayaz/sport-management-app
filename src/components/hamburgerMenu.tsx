@@ -56,8 +56,10 @@ export default function HamburgerMenu() {
 
   const loadUserData = async () => {
     try {
-      const { data } = await apiService.getUserInfo();
-      setUserData(data);
+      const data = await apiService.getUserInfo();
+      if (data) {
+        setUserData(data);
+      }
     } catch (error) {
       if (error) {
         Alert.alert('خطا', error.toString());
